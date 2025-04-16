@@ -1,0 +1,27 @@
+# Logs e caches
+*.log
+*.cache
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*
+
+# Configurações de IDEs
+# VSCode
+.vscode/
+# PhpStorm
+.idea/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.swp
+*.swo
+*~
+
+# Uploads temporários (se houver)
+uploads/
+tmp/
