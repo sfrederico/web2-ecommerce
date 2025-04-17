@@ -2,6 +2,10 @@
 
 include_once('dao/PostgresDao.php');
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $dao = new PostgresDao();
-$connection = $dao->getConnection();
+$dbConnection = $dao->getConnection();
 ?>
