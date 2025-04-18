@@ -10,27 +10,28 @@ class UsuarioDao {
     }
 
     public function createUsuario(Usuario $usuario): bool {
-        $query = "INSERT INTO Usuario (nomeUsuario, senha, nome, papel) VALUES (:nomeUsuario, :senha, :nome, :papel)";
+        $query = "INSERT INTO usuario (nome_usuario, senha, nome, papel) VALUES (:NOME_USUARIO, :SENHA, :NOME, :PAPEL)";
         $stmt = $this->connection->prepare($query);
 
         return $stmt->execute([
-            ':nomeUsuario' => $usuario->getNomeUsuario(),
-            ':senha' => $usuario->getSenha(),
-            ':nome' => $usuario->getNome(),
-            ':papel' => $usuario->getPapel(),
+            ':NOME_USUARIO' => $usuario->getNomeUsuario(),
+            ':SENHA' => $usuario->getSenha(),
+            ':NOME' => $usuario->getNome(),
+            ':PAPEL' => $usuario->getPapel(),
         ]);
     }
 
     public function getUsuarioById(int $id): ?Usuario {
-        $query = "SELECT * FROM Usuario WHERE id = :id";
+        $query = "SELECT * FROM usuario WHERE id = :id";
         $stmt = $this->connection->prepare($query);
-        $stmt->execute([':id' => $id]);
+        $stmt->bindParam(':ID', $id);
+        $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             return new Usuario(
                 $row['id'],
-                $row['nomeUsuario'],
+                $row['nome_usuario'],
                 $row['senha'],
                 $row['nome'],
                 $row['papel']
@@ -40,15 +41,16 @@ class UsuarioDao {
     }
 
     public function getUsuarioByNomeUsuario(string $nomeUsuario): ?Usuario {
-        $query = "SELECT * FROM Usuario WHERE nomeUsuario = :nomeUsuario";
+        $query = "SELECT * FROM usuario WHERE nome_usuario = :nomeUsuario";
         $stmt = $this->connection->prepare($query);
-        $stmt->execute([':nomeUsuario' => $nomeUsuario]);
+        $stmt->bindParam(':nomeUsuario', $nomeUsuario);
+        $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             return new Usuario(
                 $row['id'],
-                $row['nomeUsuario'],
+                $row['nome_usuario'],
                 $row['senha'],
                 $row['nome'],
                 $row['papel']
