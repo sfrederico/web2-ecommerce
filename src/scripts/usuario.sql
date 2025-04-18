@@ -1,11 +1,11 @@
-CREATE TABLE Usuario (
-    id SERIAL PRIMARY KEY,
-    nomeUsuario VARCHAR(255) NOT NULL,
-    senha VARCHAR(255) NOT NULL,
-    nome VARCHAR(255) NOT NULL,
-    papel VARCHAR(255) NOT NULL
+CREATE TABLE USUARIO (
+    ID SERIAL PRIMARY KEY,
+    NOME_USUARIO VARCHAR(255) NOT NULL,
+    SENHA VARCHAR(255) NOT NULL,
+    NOME VARCHAR(255) NOT NULL,
+    PAPEL VARCHAR(255) NOT NULL
 );
 
 -- Insert an admin user
-INSERT INTO Usuario (nomeUsuario, senha, nome, papel)
+INSERT INTO USUARIO (NOME_USUARIO, SENHA, NOME, PAPEL)
 VALUES ('admin', '123123', 'Administrador', 'admin');
