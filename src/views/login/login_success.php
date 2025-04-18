@@ -1,10 +1,13 @@
 <?php
-require_once __DIR__ . '/../helpers/SessionHelper.php';
+require_once __DIR__ . '/../../helpers/SessionHelper.php';
 
 if (!SessionHelper::isSessionStarted()) {
     session_start();
 }
+
+require_once __DIR__ . '/../comum/header.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +17,5 @@ if (!SessionHelper::isSessionStarted()) {
 </head>
 <body>
     <h1>Login Successful</h1>
-    <p>Welcome, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?>!</p>
 </body>
 </html>

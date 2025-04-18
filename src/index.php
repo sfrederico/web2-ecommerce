@@ -7,7 +7,7 @@ if (!SessionHelper::isSessionStarted()) {
 }
 
 if (isset($_SESSION['user'])) {
-    header("Location: /views/login_success.php");
+    header("Location: /views/login/login_success.php");
 } else {
     header("Location: /login.php");
 }
