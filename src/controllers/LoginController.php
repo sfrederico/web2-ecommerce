@@ -27,6 +27,7 @@ class LoginController {
         if ($user && $this->verifyPassword($password, $user->getSenha())) {
             session_start();
             $_SESSION['user'] = [
+                'id' => $user->getId(),
                 'nomeUsuario' => $user->getNomeUsuario(),
                 'nome' => $user->getNome(),
                 'papel' => $user->getPapel()
