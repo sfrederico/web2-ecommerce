@@ -20,11 +20,24 @@ class UsuarioDao {
             ':PAPEL' => $usuario->getPapel(),
         ]);
     }
+    
+    public function updateUsuario(Usuario $usuario): bool {
+        $query = "UPDATE usuario SET nome_usuario = :NOME_USUARIO, senha = :SENHA, nome = :NOME, papel = :PAPEL WHERE id = :ID";
+        $stmt = $this->connection->prepare($query);
+
+        return $stmt->execute([
+            ':NOME_USUARIO' => $usuario->getNomeUsuario(),
+            ':SENHA' => $usuario->getSenha(),
+            ':NOME' => $usuario->getNome(),
+            ':PAPEL' => $usuario->getPapel(),
+            ':ID' => $usuario->getId(),
+        ]);
+    }
 
     public function getUsuarioById(int $id): ?Usuario {
         $query = "SELECT * FROM usuario WHERE id = :id";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':ID', $id);
+        $stmt->bindParam(':id', $id);
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
