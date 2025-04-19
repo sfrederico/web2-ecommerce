@@ -13,6 +13,7 @@ if (!SessionHelper::isSessionStarted()) {
     <div>
         <?php if (isset($_SESSION['user'])): ?>
             <span>Welcome, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
+            <a href="/perfil.php" style="margin-left: 10px;">Profile</a>
             <a href="/logout.php" style="margin-left: 10px;">Logout</a>
         <?php else: ?>
             <a href="/login.php">Login</a>
