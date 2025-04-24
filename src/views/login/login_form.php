@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/../comum/header.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,5 +19,6 @@
         <br>
         <button type="submit">Login</button>
     </form>
+    <p>Don't have an account? <a href="../create_account.php">Create one here</a>.</p>
 </body>
 </html>
