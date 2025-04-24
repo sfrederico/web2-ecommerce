@@ -32,7 +32,7 @@ class PerfilController {
             $_SESSION['user']['papel']
         );
 
-        $this->usuarioDao->updateUsuario($usuario);
+        $this->usuarioDao->update($usuario);
 
         $_SESSION['user']['nome'] = $nome;
         $_SESSION['user']['nomeUsuario'] = $nomeUsuario;
