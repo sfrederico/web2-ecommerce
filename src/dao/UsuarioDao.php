@@ -9,19 +9,23 @@ class UsuarioDao {
         $this->connection = $dbConnection;
     }
 
-    public function createUsuario(Usuario $usuario): bool {
-        $query = "INSERT INTO usuario (nome_usuario, senha, nome, papel) VALUES (:NOME_USUARIO, :SENHA, :NOME, :PAPEL)";
+    public function create(Usuario $usuario): int {
+        $query = "INSERT INTO usuario (nome_usuario, senha, nome, papel, telefone, email) VALUES (:NOME_USUARIO, :SENHA, :NOME, :PAPEL, :TELEFONE, :EMAIL) RETURNING id";
         $stmt = $this->connection->prepare($query);
 
-        return $stmt->execute([
+        $stmt->execute([
             ':NOME_USUARIO' => $usuario->getNomeUsuario(),
             ':SENHA' => $usuario->getSenha(),
             ':NOME' => $usuario->getNome(),
             ':PAPEL' => $usuario->getPapel(),
+            ':TELEFONE' => $usuario->getTelefone(),
+            ':EMAIL' => $usuario->getEmail(),
         ]);
+
+        return (int) $stmt->fetchColumn();
     }
     
-    public function updateUsuario(Usuario $usuario): bool {
+    public function update(Usuario $usuario): bool {
         $query = "UPDATE usuario SET nome_usuario = :NOME_USUARIO, senha = :SENHA, nome = :NOME, papel = :PAPEL WHERE id = :ID";
         $stmt = $this->connection->prepare($query);
 
@@ -47,7 +51,9 @@ class UsuarioDao {
                 $row['nome_usuario'],
                 $row['senha'],
                 $row['nome'],
-                $row['papel']
+                $row['papel'],
+                $row['telefone'],
+                $row['email']
             );
         }
         return null;
@@ -66,7 +72,9 @@ class UsuarioDao {
                 $row['nome_usuario'],
                 $row['senha'],
                 $row['nome'],
-                $row['papel']
+                $row['papel'],
+                $row['telefone'],
+                $row['email']
             );
         }
         return null;
