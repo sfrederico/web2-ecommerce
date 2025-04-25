@@ -31,7 +31,18 @@ if (!isset($_SESSION['user'])) {
 
         <label for="senha">Password:</label>
         <input type="password" id="senha" name="senha" value="<?php echo htmlspecialchars($usuario->getSenha()); ?>" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($usuario->getEmail()); ?>" required>
     
+        <?php if ($usuario->getPapel() === 'cliente'): ?>
+            <label for="endereco">Credit card:</label>
+            <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($cliente->getCartaoCredito()); ?>" required>
+        <?php elseif ($usuario->getPapel() === 'fornecedor'): ?>
+            <label for="empresa">Descricao:</label>
+            <input type="text" id="empresa" name="empresa" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
+        <?php endif; ?>
+
         <button type="submit">Update</button>
     </form>
 </body>

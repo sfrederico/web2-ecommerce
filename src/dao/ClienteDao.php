@@ -3,17 +3,19 @@ require_once __DIR__ . '/../model/Cliente.php';
 
 class ClienteDao {
     private $connection;
+    private $usuarioDao;
 
-    public function __construct($dbConnection) {
+    public function __construct($dbConnection, ?UsuarioDao $usuarioDao = null) {
         $this->connection = $dbConnection;
+        $this->usuarioDao = $usuarioDao;
     }
 
     public function create(Cliente $cliente): int {
-        $query = "INSERT INTO cliente (usuario_id, cartao_credito) VALUES (:USUARIO_ID, :CARTAO_CREDITO) RETURNING id";
+        $query = "INSERT INTO cliente (id, cartao_credito) VALUES (:ID, :CARTAO_CREDITO) RETURNING id";
         $stmt = $this->connection->prepare($query);
 
         $stmt->execute([
-            ':USUARIO_ID' => $cliente->getUsuario()->getId(),
+            ':ID' => $cliente->getUsuario()->getId(),
             ':CARTAO_CREDITO' => $cliente->getCartaoCredito(),
         ]);
 
@@ -25,7 +27,7 @@ class ClienteDao {
         $stmt = $this->connection->prepare($query);
 
         $stmt->execute([
-            ':USUARIO_ID' => $cliente->getId(),
+            ':ID' => $cliente->getId(),
             ':CARTAO_CREDITO' => $cliente->getCartaoCredito(),
         ]);
 
@@ -37,5 +39,22 @@ class ClienteDao {
         $stmt = $this->connection->prepare($query);
 
         return $stmt->execute([':USUARIO_ID' => $usuarioId]);
+    }
+
+    public function getClienteById(int $id): ?Cliente {
+        $query = "SELECT * FROM cliente WHERE id = :ID";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':ID', $id);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $usuario = $this->usuarioDao->getUsuarioById($row['id']);
+            return new Cliente(
+                $usuario,
+                $row['cartao_credito']
+            );
+        }
+        return null;
     }
 }
