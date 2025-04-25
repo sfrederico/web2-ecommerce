@@ -33,21 +33,35 @@ class PerfilController {
 
     }
 
-    public function atualizaPerfil(
-    ) {
+    public function atualizaPerfil($id) {
+        $usuario = $this->usuarioDao->getUsuarioById($id);
+
         $nome = $_POST['nome'];
         $nomeUsuario = $_POST['nomeUsuario'];
         $senha = $_POST['senha'];
+        $email = $_POST['email'];
+        $telefone = $_POST['telefone'];
 
-        $usuario = new Usuario(
-            $_SESSION['user']['id'],
-            $nomeUsuario,
-            $senha,
-            $nome,
-            $_SESSION['user']['papel']
-        );
-
+        $usuario->setNome($nome);
+        $usuario->setNomeUsuario($nomeUsuario);
+        $usuario->setSenha($senha);
+        $usuario->setEmail($email);
+        $usuario->setTelefone($telefone);
         $this->usuarioDao->update($usuario);
+
+        if ($usuario->getPapel() == 'cliente') {
+            $cartaoCredito = $_POST['cartaoCredito'];
+            $cliente = $this->clienteDao->getClienteById($id);
+            $cliente->setCartaoCredito($cartaoCredito);
+            $this->clienteDao->update($cliente);
+
+        } elseif ($usuario->getPapel() == 'fornecedor') {
+            $descricao = $_POST['descricao'];
+            $fornecedor = $this->fornecedorDao->getFornecedorById($id);
+            $fornecedor->setDescricao($descricao);
+            $this->fornecedorDao->update($fornecedor);
+
+        }
 
         $_SESSION['user']['nome'] = $nome;
         $_SESSION['user']['nomeUsuario'] = $nomeUsuario;

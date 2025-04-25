@@ -17,7 +17,7 @@ if (!isset($_SESSION['user'])) {
 $controller = new PerfilController($dbConnection);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->atualizaPerfil();
+    $controller->atualizaPerfil($_SESSION['user']['id']);
 } else {
     $controller->mostraUsuario($_SESSION['user']['id']);
 }
