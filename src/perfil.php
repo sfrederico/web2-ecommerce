@@ -17,7 +17,11 @@ if (!isset($_SESSION['user'])) {
 $controller = new PerfilController($dbConnection);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->atualizaPerfil($_SESSION['user']['id']);
+    if (isset($_POST['action']) && $_POST['action'] === 'delete') {
+        $controller->deletaUsuario($_SESSION['user']['id']);
+    } else {
+        $controller->atualizaPerfil($_SESSION['user']['id']);
+    }
 } else {
     $controller->mostraUsuario($_SESSION['user']['id']);
 }

@@ -40,6 +40,12 @@ class UsuarioDao {
         ]);
     }
 
+    public function delete(int $id): bool {
+        $query = "DELETE FROM Usuario WHERE id = :id";
+        $stmt = $this->connection->prepare($query);
+        return $stmt->execute([':id' => $id]);
+    }
+
     public function getUsuarioById(int $id): ?Usuario {
         $query = "SELECT * FROM usuario WHERE id = :id";
         $stmt = $this->connection->prepare($query);
@@ -82,6 +88,5 @@ class UsuarioDao {
         return null;
     }
 
-    // Additional methods for update and delete can be added here
 }
 ?>

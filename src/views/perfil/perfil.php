@@ -48,5 +48,10 @@ if (!isset($_SESSION['user'])) {
 
         <button type="submit">Update</button>
     </form>
+
+    <form action="../perfil.php" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
+        <input type="hidden" name="action" value="delete">
+        <button type="submit">Delete Account</button>
+    </form>
 </body>
 </html>

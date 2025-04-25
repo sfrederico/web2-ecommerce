@@ -69,4 +69,9 @@ class PerfilController {
         header("Location: /perfil.php?success=1");
     }
 
+    public function deletaUsuario($id) {
+        $this->usuarioDao->delete($id);
+        header("Location: /logout.php");
+    }
+
 }
