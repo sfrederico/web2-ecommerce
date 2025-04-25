@@ -23,11 +23,11 @@ class FornecedorDao {
     }
 
     public function update(Fornecedor $fornecedor): int {
-        $query = "UPDATE fornecedor SET descricao = :DESCRICAO WHERE usuario_id = :USUARIO_ID RETURNING id";
+        $query = "UPDATE fornecedor SET descricao = :DESCRICAO WHERE id = :ID RETURNING id";
         $stmt = $this->connection->prepare($query);
 
         $stmt->execute([
-            ':USUARIO_ID' => $fornecedor->getId(),
+            ':ID' => $fornecedor->getUsuario()->getId(),
             ':DESCRICAO' => $fornecedor->getDescricao(),
         ]);
 

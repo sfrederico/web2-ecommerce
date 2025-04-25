@@ -26,15 +26,17 @@ class UsuarioDao {
     }
     
     public function update(Usuario $usuario): bool {
-        $query = "UPDATE usuario SET nome_usuario = :NOME_USUARIO, senha = :SENHA, nome = :NOME, papel = :PAPEL WHERE id = :ID";
+        $query = "UPDATE usuario SET nome_usuario = :NOME_USUARIO, senha = :SENHA, nome = :NOME, papel = :PAPEL, telefone = :TELEFONE, email = :EMAIL WHERE id = :ID";
         $stmt = $this->connection->prepare($query);
 
         return $stmt->execute([
+            ':ID' => $usuario->getId(),
             ':NOME_USUARIO' => $usuario->getNomeUsuario(),
             ':SENHA' => $usuario->getSenha(),
             ':NOME' => $usuario->getNome(),
             ':PAPEL' => $usuario->getPapel(),
-            ':ID' => $usuario->getId(),
+            ':TELEFONE' => $usuario->getTelefone(),
+            ':EMAIL' => $usuario->getEmail(),
         ]);
     }
 

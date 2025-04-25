@@ -23,11 +23,11 @@ class ClienteDao {
     }
 
     public function update(Cliente $cliente): int {
-        $query = "UPDATE cliente SET cartao_credito = :CARTAO_CREDITO WHERE usuario_id = :USUARIO_ID RETURNING id";
+        $query = "UPDATE cliente SET cartao_credito = :CARTAO_CREDITO WHERE id = :ID RETURNING id";
         $stmt = $this->connection->prepare($query);
 
         $stmt->execute([
-            ':ID' => $cliente->getId(),
+            ':ID' => $cliente->getUsuario()->getId(),
             ':CARTAO_CREDITO' => $cliente->getCartaoCredito(),
         ]);
 
