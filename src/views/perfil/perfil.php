@@ -34,13 +34,16 @@ if (!isset($_SESSION['user'])) {
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($usuario->getEmail()); ?>" required>
+
+        <label for="telefone">Phone:</label>
+        <input type="text" id="telefone" name="telefone" value="<?php echo htmlspecialchars($usuario->getTelefone()); ?>" required>
     
         <?php if ($usuario->getPapel() === 'cliente'): ?>
             <label for="endereco">Credit card:</label>
-            <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($cliente->getCartaoCredito()); ?>" required>
+            <input type="text" id="cartaoCredito" name="cartaoCredito" value="<?php echo htmlspecialchars($cliente->getCartaoCredito()); ?>" required>
         <?php elseif ($usuario->getPapel() === 'fornecedor'): ?>
             <label for="empresa">Descricao:</label>
-            <input type="text" id="empresa" name="empresa" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
+            <input type="text" id="descricao" name="descricao" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
         <?php endif; ?>
 
         <button type="submit">Update</button>
