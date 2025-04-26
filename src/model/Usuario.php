@@ -6,13 +6,17 @@ class Usuario {
     private string $senha;
     private string $nome;
     private string $papel;
+    private string $telefone;
+    private string $email;
 
-    public function __construct(int $id, string $nomeUsuario, string $senha, string $nome, string $papel) {
+    public function __construct(int $id, string $nomeUsuario, string $senha, string $nome, string $papel, string $telefone, string $email) {
         $this->id = $id;
         $this->nomeUsuario = $nomeUsuario;
         $this->senha = $senha;
         $this->nome = $nome;
         $this->papel = $papel;
+        $this->telefone = $telefone;
+        $this->email = $email;
     }
 
     public function getId(): int {
@@ -35,6 +39,14 @@ class Usuario {
         return $this->papel;
     }
 
+    public function getTelefone(): string {
+        return $this->telefone;
+    }
+
+    public function getEmail(): string {
+        return $this->email;
+    }
+
     public function setNomeUsuario(string $nomeUsuario): void {
         $this->nomeUsuario = $nomeUsuario;
     }
@@ -49,5 +61,13 @@ class Usuario {
 
     public function setPapel(string $papel): void {
         $this->papel = $papel;
+    }
+
+    public function setTelefone(string $telefone): void {
+        $this->telefone = $telefone;
+    }
+
+    public function setEmail(string $email): void {
+        $this->email = $email;
     }
 }

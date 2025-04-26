@@ -9,29 +9,41 @@ class UsuarioDao {
         $this->connection = $dbConnection;
     }
 
-    public function createUsuario(Usuario $usuario): bool {
-        $query = "INSERT INTO usuario (nome_usuario, senha, nome, papel) VALUES (:NOME_USUARIO, :SENHA, :NOME, :PAPEL)";
+    public function create(Usuario $usuario): int {
+        $query = "INSERT INTO usuario (nome_usuario, senha, nome, papel, telefone, email) VALUES (:NOME_USUARIO, :SENHA, :NOME, :PAPEL, :TELEFONE, :EMAIL) RETURNING id";
         $stmt = $this->connection->prepare($query);
 
-        return $stmt->execute([
+        $stmt->execute([
             ':NOME_USUARIO' => $usuario->getNomeUsuario(),
             ':SENHA' => $usuario->getSenha(),
             ':NOME' => $usuario->getNome(),
             ':PAPEL' => $usuario->getPapel(),
+            ':TELEFONE' => $usuario->getTelefone(),
+            ':EMAIL' => $usuario->getEmail(),
         ]);
+
+        return (int) $stmt->fetchColumn();
     }
     
-    public function updateUsuario(Usuario $usuario): bool {
-        $query = "UPDATE usuario SET nome_usuario = :NOME_USUARIO, senha = :SENHA, nome = :NOME, papel = :PAPEL WHERE id = :ID";
+    public function update(Usuario $usuario): bool {
+        $query = "UPDATE usuario SET nome_usuario = :NOME_USUARIO, senha = :SENHA, nome = :NOME, papel = :PAPEL, telefone = :TELEFONE, email = :EMAIL WHERE id = :ID";
         $stmt = $this->connection->prepare($query);
 
         return $stmt->execute([
+            ':ID' => $usuario->getId(),
             ':NOME_USUARIO' => $usuario->getNomeUsuario(),
             ':SENHA' => $usuario->getSenha(),
             ':NOME' => $usuario->getNome(),
             ':PAPEL' => $usuario->getPapel(),
-            ':ID' => $usuario->getId(),
+            ':TELEFONE' => $usuario->getTelefone(),
+            ':EMAIL' => $usuario->getEmail(),
         ]);
+    }
+
+    public function delete(int $id): bool {
+        $query = "DELETE FROM Usuario WHERE id = :id";
+        $stmt = $this->connection->prepare($query);
+        return $stmt->execute([':id' => $id]);
     }
 
     public function getUsuarioById(int $id): ?Usuario {
@@ -47,7 +59,9 @@ class UsuarioDao {
                 $row['nome_usuario'],
                 $row['senha'],
                 $row['nome'],
-                $row['papel']
+                $row['papel'],
+                $row['telefone'],
+                $row['email']
             );
         }
         return null;
@@ -66,12 +80,13 @@ class UsuarioDao {
                 $row['nome_usuario'],
                 $row['senha'],
                 $row['nome'],
-                $row['papel']
+                $row['papel'],
+                $row['telefone'],
+                $row['email']
             );
         }
         return null;
     }
 
-    // Additional methods for update and delete can be added here
 }
 ?>

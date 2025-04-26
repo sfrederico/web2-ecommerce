@@ -31,8 +31,27 @@ if (!isset($_SESSION['user'])) {
 
         <label for="senha">Password:</label>
         <input type="password" id="senha" name="senha" value="<?php echo htmlspecialchars($usuario->getSenha()); ?>" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($usuario->getEmail()); ?>" required>
+
+        <label for="telefone">Phone:</label>
+        <input type="text" id="telefone" name="telefone" value="<?php echo htmlspecialchars($usuario->getTelefone()); ?>" required>
     
+        <?php if ($usuario->getPapel() === 'cliente'): ?>
+            <label for="endereco">Credit card:</label>
+            <input type="text" id="cartaoCredito" name="cartaoCredito" value="<?php echo htmlspecialchars($cliente->getCartaoCredito()); ?>" required>
+        <?php elseif ($usuario->getPapel() === 'fornecedor'): ?>
+            <label for="empresa">Descricao:</label>
+            <input type="text" id="descricao" name="descricao" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
+        <?php endif; ?>
+
         <button type="submit">Update</button>
+    </form>
+
+    <form action="../perfil.php" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
+        <input type="hidden" name="action" value="delete">
+        <button type="submit">Delete Account</button>
     </form>
 </body>
 </html>
