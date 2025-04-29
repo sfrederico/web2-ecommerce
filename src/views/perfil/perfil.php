@@ -44,6 +44,7 @@ if (!isset($_SESSION['user'])) {
         <?php elseif ($usuario->getPapel() === 'fornecedor'): ?>
             <label for="empresa">Descricao:</label>
             <input type="text" id="descricao" name="descricao" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
+            <a href="produto.php" class="btn btn-primary">Novo Produto</a>
         <?php endif; ?>
 
         <button type="submit">Update</button>

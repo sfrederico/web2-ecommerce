@@ -15,13 +15,18 @@ class ProdutoController {
     }
 
     public function criaProduto() {
-        $nome = $_POST['nome'];
-        $descricao = $_POST['descricao'];
-
-        $produto = new Produto($nome, $descricao);
-        $this->produtoDao->salvarProduto($produto);
-
-        header("Location: /produtos.php?success=1");
+            $nome = $_POST['nome'];
+            $descricao = $_POST['descricao'];
+    
+            $produto = new Produto($nome, $descricao);
+    
+            if ($this->produtoDao->salvarProduto($produto)) {
+                header("Location: /src/views/produto/lista.php");
+                exit();
+            } else {
+                header("Location: /src/views/produto/produto_form.php?error=1");
+                exit();
+            }
     }
 
     public function editaProduto($id) {

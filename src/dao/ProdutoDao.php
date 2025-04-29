@@ -13,10 +13,12 @@ class ProdutoDao {
         $query = "INSERT INTO produto (nome, descricao) VALUES (:NOME, :DESCRICAO)";
         $stmt = $this->connection->prepare($query);
 
-        return $stmt->execute([
+        $stmt->execute([
             ':NOME' => $produto->getNome(),
             ':DESCRICAO' => $produto->getDescricao(),
         ]);
+
+        return (int) $stmt->fetchColumn();
     }
 
     public function atualizarProduto(int $id, Produto $produto): bool {
