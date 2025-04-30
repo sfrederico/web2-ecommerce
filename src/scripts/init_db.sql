@@ -1,3 +1,4 @@
+-- Tabela de usuários
 CREATE TABLE USUARIO (
     ID SERIAL PRIMARY KEY,
     NOME_USUARIO VARCHAR(255) NOT NULL UNIQUE,
@@ -20,6 +21,14 @@ CREATE TABLE FORNECEDOR (
     DESCRICAO TEXT
 );
 
--- Insert an admin user
+-- Tabela de produtos
+CREATE TABLE produto (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    descricao TEXT NOT NULL,
+    fornecedor_id INT NOT NULL REFERENCES fornecedor(id) ON DELETE CASCADE
+);
+
+-- Inserção de um usuário administrador
 INSERT INTO USUARIO (NOME_USUARIO, SENHA, NOME, PAPEL, TELEFONE, EMAIL)
 VALUES ('admin', '123123', 'Administrador', 'admin', '123456789', 'admin@example.com');
