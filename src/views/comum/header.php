@@ -13,6 +13,9 @@ if (!SessionHelper::isSessionStarted()) {
     <div>
         <?php if (isset($_SESSION['user'])): ?>
             <span>Welcome, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?></span>
+            <?php if ($_SESSION['user']['papel'] === 'fornecedor'): ?>
+                <a href="/estoque.php" style="margin-left: 10px;">Estoque</a>
+            <?php endif; ?>
             <a href="/perfil.php" style="margin-left: 10px;">Profile</a>
             <a href="/logout.php" style="margin-left: 10px;">Logout</a>
         <?php else: ?>
