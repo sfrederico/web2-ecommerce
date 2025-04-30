@@ -1,12 +1,15 @@
 <?php
 require_once __DIR__ . '/../dao/ProdutoDao.php';
 require_once __DIR__ . '/../model/Produto.php';
+require_once __DIR__ . '/../services/ProdutoService.php';
 
 class ProdutoController {
     private $produtoDao;
+    private ProdutoService $produtoService;
 
     public function __construct($dbConnection) {
         $this->produtoDao = new ProdutoDao($dbConnection);
+        $this->produtoService = new ProdutoService($dbConnection);
     }
 
     public function listaProdutos() {
@@ -14,19 +17,20 @@ class ProdutoController {
         include __DIR__ . '/../views/produto/lista.php';
     }
 
-    public function criaProduto() {
-            $nome = $_POST['nome'];
-            $descricao = $_POST['descricao'];
-    
-            $produto = new Produto($nome, $descricao);
-    
-            if ($this->produtoDao->salvarProduto($produto)) {
-                header("Location: /src/views/produto/lista.php");
-                exit();
-            } else {
-                header("Location: /src/views/produto/produto_form.php?error=1");
-                exit();
-            }
+    public function mostrarFormularioCriacao() {
+        include __DIR__ . '/../views/produto/produto_form.php';
+    }
+
+    public function salvarProduto(array $dados) {
+        $nome = $dados['nome'];
+        $descricao = $dados['descricao'];
+        $fornecedorId = $_SESSION['user']['id'];
+
+        $this->produtoService->criarProduto($nome, $descricao, $fornecedorId);
+
+        // Redireciona de volta para a lista de produtos
+        header("Location: /estoque.php");
+        exit();
     }
 
     public function editaProduto($id) {

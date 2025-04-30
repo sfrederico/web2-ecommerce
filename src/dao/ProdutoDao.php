@@ -9,16 +9,15 @@ class ProdutoDao {
         $this->connection = $dbConnection;
     }
 
-    public function salvarProduto(Produto $produto): bool {
-        $query = "INSERT INTO produto (nome, descricao) VALUES (:NOME, :DESCRICAO)";
+    public function create(Produto $produto): bool {
+        $query = "INSERT INTO produto (nome, descricao, fornecedor_id) VALUES (:nome, :descricao, :fornecedorId)";
         $stmt = $this->connection->prepare($query);
 
-        $stmt->execute([
-            ':NOME' => $produto->getNome(),
-            ':DESCRICAO' => $produto->getDescricao(),
+        return $stmt->execute([
+            ':nome' => $produto->getNome(),
+            ':descricao' => $produto->getDescricao(),
+            ':fornecedorId' => $produto->getFornecedor()->getUsuario()->getId(),
         ]);
-
-        return (int) $stmt->fetchColumn();
     }
 
     public function atualizarProduto(int $id, Produto $produto): bool {
@@ -68,6 +67,21 @@ class ProdutoDao {
         $stmt->bindParam(':id', $id);
 
         return $stmt->execute();
+    }
+
+    public function getProdutosPorFornecedor(int $fornecedorId): array {
+        $query = "SELECT * FROM produto WHERE fornecedor_id = :fornecedorId";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':fornecedorId' => $fornecedorId]);
+
+        $produtos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $produto = new Produto($row['nome'], $row['descricao']);
+            $produto->setId($row['id']);
+            $produtos[] = $produto;
+        }
+
+        return $produtos;
     }
 }
 ?>
