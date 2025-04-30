@@ -34,6 +34,7 @@ if (!isset($_SESSION['user'])) {
                     <h2 style="font-size: 1.2rem; margin: 0;">Produto: <?php echo htmlspecialchars($produto->getNome()); ?></h2>
                     <p style="margin: 10px 0;">Descrição: <?php echo htmlspecialchars($produto->getDescricao()); ?></p>
                     <p style="font-size: 0.9rem; color: #555;">ID: <?php echo htmlspecialchars($produto->getId()); ?></p>
+                    <a href="/produto.php?acao=editar&id=<?php echo $produto->getId(); ?>" style="color: blue; text-decoration: none;">Editar</a>
                 </div>
             <?php endforeach; ?>
         </div>

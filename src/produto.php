@@ -16,8 +16,28 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['papel'] !== 'fornecedor') {
 $controller = new ProdutoController($dbConnection);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->salvarProduto($_POST);
-} else {
-    $controller->mostrarFormularioCriacao();
+    $acao = $_POST['acao'] ?? '';
+    switch ($acao) {
+        case 'atualizar':
+            $controller->atualizarProduto((int)$_GET['id'], $_POST);
+            break;
+        case 'criar':
+            $controller->salvarProduto($_POST);
+            break;
+        default:
+            break;
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $acao = $_GET['acao'] ?? '';
+    switch ($acao) {
+        case 'editar':
+            if (isset($_GET['id'])) {
+                $controller->editarProduto((int)$_GET['id']);
+            }
+            break;
+        default:
+            $controller->mostrarFormularioCriacao();
+            break;
+    }
 }
 

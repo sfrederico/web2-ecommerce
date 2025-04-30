@@ -33,21 +33,28 @@ class ProdutoController {
         exit();
     }
 
-    public function editaProduto($id) {
-        $produto = $this->produtoDao->getProdutoById($id);
-        if ($produto) {
-            include __DIR__ . '/../views/produto/editar.php';
+    public function editarProduto(int $id) {
+        $produto = $this->produtoService->buscarProdutoPorId($id);
+
+        if (!$produto) {
+            throw new Exception("Produto não encontrado.");
         }
+
+        include __DIR__ . '/../views/produto/editar_produto.php';
     }
 
-    public function atualizaProduto($id) {
-        $nome = $_POST['nome'];
-        $descricao = $_POST['descricao'];
+    public function atualizarProduto(int $id, array $dados) {
+        $nome = $dados['nome'];
+        $descricao = $dados['descricao'];
 
         $produto = new Produto($nome, $descricao);
-        $this->produtoDao->atualizarProduto($id, $produto);
+        $produto->setId($id);
 
-        header("Location: /produtos.php?success=1");
+        $this->produtoService->atualizarProduto($produto);
+
+        // Redireciona de volta para a lista de produtos ou estoque
+        header("Location: /estoque.php");
+        exit();
     }
 
     public function excluiProduto($id) {

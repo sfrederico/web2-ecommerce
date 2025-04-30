@@ -20,30 +20,29 @@ class ProdutoDao {
         ]);
     }
 
-    public function atualizarProduto(int $id, Produto $produto): bool {
-        $query = "UPDATE produto SET nome = :NOME, descricao = :DESCRICAO WHERE id = :ID";
+    public function update(Produto $produto): bool {
+        $query = "UPDATE produto SET nome = :nome, descricao = :descricao WHERE id = :id";
         $stmt = $this->connection->prepare($query);
 
         return $stmt->execute([
-            ':NOME' => $produto->getNome(),
-            ':DESCRICAO' => $produto->getDescricao(),
-            ':ID' => $id,
+            ':nome' => $produto->getNome(),
+            ':descricao' => $produto->getDescricao(),
+            ':id' => $produto->getId(),
         ]);
     }
 
     public function getProdutoById(int $id): ?Produto {
         $query = "SELECT * FROM produto WHERE id = :id";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        $stmt->execute([':id' => $id]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            return new Produto(
-                $row['nome'],
-                $row['descricao']
-            );
+            $produto = new Produto($row['nome'], $row['descricao']);
+            $produto->setId($row['id']);
+            return $produto;
         }
+
         return null;
     }
 

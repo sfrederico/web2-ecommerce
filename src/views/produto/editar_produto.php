@@ -14,17 +14,17 @@ if (!SessionHelper::isSessionStarted()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Produto</title>
+    <title>Editar Produto</title>
 </head>
 <body>
-    <h1>Criar Produto</h1>
-    <form action="/produto.php" method="POST">
-        <input type="hidden" name="acao" value="criar">
+    <h1>Editar Produto</h1>
+    <form action="/produto.php?acao=atualizar&id=<?php echo $produto->getId(); ?>" method="POST">
+        <input type="hidden" name="acao" value="atualizar">    
         <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
+        <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($produto->getNome()); ?>" required>
         <br>
         <label for="descricao">Descrição:</label>
-        <textarea id="descricao" name="descricao" required></textarea>
+        <textarea id="descricao" name="descricao" required><?php echo htmlspecialchars($produto->getDescricao()); ?></textarea>
         <br>
         <button type="submit">Salvar</button>
     </form>

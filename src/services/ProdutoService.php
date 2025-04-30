@@ -27,4 +27,12 @@ class ProdutoService {
 
         $this->produtoDao->create($produto);
     }
+
+    public function buscarProdutoPorId(int $id): ?Produto {
+        return $this->produtoDao->getProdutoById($id);
+    }
+
+    public function atualizarProduto(Produto $produto): void {
+        $this->produtoDao->update($produto);
+    }
 }
