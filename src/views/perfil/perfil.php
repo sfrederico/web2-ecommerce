@@ -19,40 +19,57 @@ if (!isset($_SESSION['user'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <link rel="stylesheet" href="/src/views/perfil/style.css"> <!-- Link para o CSS -->
 </head>
-<body>
-    <h1>Update Profile</h1>
-    <form action="../perfil.php" method="POST">
-        <label for="nome">Name:</label>
-        <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($usuario->getNome()); ?>" required>
+<body class="profile-page">
+    <div class="container">
+        <h1 class="title">Update Profile</h1>
+        <form action="../perfil.php" method="POST" class="form">
+            <div class="form-group">
+                <label for="nome">Name:</label>
+                <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($usuario->getNome()); ?>" required>
+            </div>
 
-        <label for="nomeUsuario">Username:</label>
-        <input type="text" id="nomeUsuario" name="nomeUsuario" value="<?php echo htmlspecialchars($usuario->getNomeUsuario()); ?>" required>
+            <div class="form-group">
+                <label for="nomeUsuario">Username:</label>
+                <input type="text" id="nomeUsuario" name="nomeUsuario" value="<?php echo htmlspecialchars($usuario->getNomeUsuario()); ?>" required>
+            </div>
 
-        <label for="senha">Password:</label>
-        <input type="password" id="senha" name="senha" value="<?php echo htmlspecialchars($usuario->getSenha()); ?>" required>
+            <div class="form-group">
+                <label for="senha">Password:</label>
+                <input type="password" id="senha" name="senha" value="<?php echo htmlspecialchars($usuario->getSenha()); ?>" required>
+            </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($usuario->getEmail()); ?>" required>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($usuario->getEmail()); ?>" required>
+            </div>
 
-        <label for="telefone">Phone:</label>
-        <input type="text" id="telefone" name="telefone" value="<?php echo htmlspecialchars($usuario->getTelefone()); ?>" required>
-    
-        <?php if ($usuario->getPapel() === 'cliente'): ?>
-            <label for="endereco">Credit card:</label>
-            <input type="text" id="cartaoCredito" name="cartaoCredito" value="<?php echo htmlspecialchars($cliente->getCartaoCredito()); ?>" required>
-        <?php elseif ($usuario->getPapel() === 'fornecedor'): ?>
-            <label for="empresa">Descricao:</label>
-            <input type="text" id="descricao" name="descricao" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
-            <a href="produto.php" class="btn btn-primary">Novo Produto</a>
-        <?php endif; ?>
+            <div class="form-group">
+                <label for="telefone">Phone:</label>
+                <input type="text" id="telefone" name="telefone" value="<?php echo htmlspecialchars($usuario->getTelefone()); ?>" required>
+            </div>
+        
+            <?php if ($usuario->getPapel() === 'cliente'): ?>
+                <div class="form-group">
+                    <label for="cartaoCredito">Credit card:</label>
+                    <input type="text" id="cartaoCredito" name="cartaoCredito" value="<?php echo htmlspecialchars($cliente->getCartaoCredito()); ?>" required>
+                </div>
+            <?php elseif ($usuario->getPapel() === 'fornecedor'): ?>
+                <div class="form-group">
+                    <label for="descricao">Descricao:</label>
+                    <input type="text" id="descricao" name="descricao" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
+                </div>
+                <a href="produto.php" class="btn btn-primary">Novo Produto</a>
+            <?php endif; ?>
 
-        <button type="submit">Update</button>
-    </form>
+            <button type="submit" class="btn btn-success">Update</button>
+        </form>
 
-    <form action="../perfil.php" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
-        <input type="hidden" name="action" value="delete">
-        <button type="submit">Delete Account</button>
-    </form>
+        <form action="../perfil.php" method="POST" class="form" onsubmit="return confirm('Are you sure you want to delete your account?');">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger">Delete Account</button>
+        </form>
+    </div>
 </body>
 </html>

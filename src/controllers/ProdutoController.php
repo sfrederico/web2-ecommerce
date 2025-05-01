@@ -57,8 +57,8 @@ class ProdutoController {
         exit();
     }
 
-    public function excluiProduto($id) {
+    public function excluirProduto($id) {
         $this->produtoDao->deletarProduto($id);
-        header("Location: /produtos.php?success=1");
+        header("Location: /estoque.php");
     }
 }

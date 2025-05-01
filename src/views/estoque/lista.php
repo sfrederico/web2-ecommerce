@@ -10,7 +10,6 @@ if (!isset($_SESSION['user'])) {
     header("Location: /login.php");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -19,25 +18,37 @@ if (!isset($_SESSION['user'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estoque</title>
+    <link rel="stylesheet" href="/src/views/estoque/style.css">
 </head>
 <body>
-    <h1>Estoque</h1>
-    <button>
-        <a href="/produto.php" style="margin: 20px 0; padding: 10px 20px; text-decoration: none;">Criar Produto</a>
-    </button>
-    <?php if (empty($produtos)): ?>
-        <p>O estoque está vazio. Nenhum produto encontrado.</p>
-    <?php else: ?>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-            <?php foreach ($produtos as $produto): ?>
-                <div style="border: 1px solid #ddd; padding: 10px; width: 200px; border-radius: 5px;">
-                    <h2 style="font-size: 1.2rem; margin: 0;">Produto: <?php echo htmlspecialchars($produto->getNome()); ?></h2>
-                    <p style="margin: 10px 0;">Descrição: <?php echo htmlspecialchars($produto->getDescricao()); ?></p>
-                    <p style="font-size: 0.9rem; color: #555;">ID: <?php echo htmlspecialchars($produto->getId()); ?></p>
-                    <a href="/produto.php?acao=editar&id=<?php echo $produto->getId(); ?>" style="color: blue; text-decoration: none;">Editar</a>
-                </div>
-            <?php endforeach; ?>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Estoque</h1>
+        <div class="text-center mb-4">
+            <a href="/produto.php" class="btn btn-primary">Criar Produto</a>
         </div>
-    <?php endif; ?>
+        <?php if (empty($produtos)): ?>
+            <div class="alert alert-warning text-center" role="alert">
+                O estoque está vazio. Nenhum produto encontrado.
+            </div>
+        <?php else: ?>
+            <div class="row g-4">
+                <?php foreach ($produtos as $produto): ?>
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Produto: <?php echo htmlspecialchars($produto->getNome()); ?></h5>
+                                <p class="card-text">Descrição: <?php echo htmlspecialchars($produto->getDescricao()); ?></p>
+                                <p class="text-muted">ID: <?php echo htmlspecialchars($produto->getId()); ?></p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="/produto.php?acao=editar&id=<?php echo $produto->getId(); ?>" class="btn btn-sm btn-outline-primary">Editar</a>
+                                    <a href="/produto.php?acao=excluir&id=<?php echo $produto->getId(); ?>" class="btn btn-sm btn-outline-danger">Excluir</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
 </body>
 </html>

@@ -35,9 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $controller->editarProduto((int)$_GET['id']);
             }
             break;
+        case 'excluir':
+            if (isset($_GET['id'])) {
+                $controller->excluirProduto((int)$_GET['id']);
+            }
+            break;
         default:
             $controller->mostrarFormularioCriacao();
             break;
     }
-}
+} 
 
