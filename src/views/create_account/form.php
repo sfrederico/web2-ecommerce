@@ -39,7 +39,7 @@ if (!isset($error)) {
             <option value="fornecedor">Supplier</option>
         </select><br>
 
-        <button type="submit">Create Account</button>
+        <button id="create-account-submit-btn" type="submit">Create Account</button>
     </form>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -54,7 +54,7 @@ if (!isset($error)) {
                 }
 
                 // Add new field based on role selection
-                const submitButton = document.querySelector('form button[type="submit"]');
+                const submitButton = document.getElementById("create-account-submit-btn");
                 if (role === 'fornecedor') {
                     const descriptionField = document.createElement('div');
                     descriptionField.id = 'dynamic-field';
