@@ -60,7 +60,6 @@ if (!isset($_SESSION['user'])) {
                     <label for="descricao">Descricao:</label>
                     <input type="text" id="descricao" name="descricao" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
                 </div>
-                <a href="produto.php" class="btn btn-primary">Novo Produto</a>
             <?php endif; ?>
 
             <button type="submit" class="btn btn-success">Update</button>
