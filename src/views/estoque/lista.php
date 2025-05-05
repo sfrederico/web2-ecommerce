@@ -38,6 +38,8 @@ if (!isset($_SESSION['user'])) {
                             <div class="card-body">
                                 <h5 class="card-title">Produto: <?php echo htmlspecialchars($produto->getNome()); ?></h5>
                                 <p class="card-text">Descrição: <?php echo htmlspecialchars($produto->getDescricao()); ?></p>
+                                <p style="margin: 10px 0;">Quantidade em Estoque: <?php echo htmlspecialchars($produto->getEstoque()->getQuantidade() ?? 'N/A'); ?></p>
+                                <p style="margin: 10px 0;">Preço: R$ <?php echo htmlspecialchars(number_format($produto->getEstoque()->getPreco() ?? 0, 2, ',', '.')); ?></p>
                                 <p class="text-muted">ID: <?php echo htmlspecialchars($produto->getId()); ?></p>
                                 <div class="d-flex justify-content-between">
                                     <a href="/produto.php?acao=editar&id=<?php echo $produto->getId(); ?>" class="btn btn-sm btn-outline-primary">Editar</a>

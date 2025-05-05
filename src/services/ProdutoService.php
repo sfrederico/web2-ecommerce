@@ -33,7 +33,8 @@ class ProdutoService {
         $produto->setId($produtoId);
 
         // Criação do estoque associado ao produto
-        $estoque = new Estoque($produto, $dados['quantidade'], $dados['preco']);
+        $estoque = new Estoque($dados['quantidade'], $dados['preco']);
+        $estoque->setProduto($produto);
         $this->estoqueDao->create($estoque);
 
         return $produtoId;
