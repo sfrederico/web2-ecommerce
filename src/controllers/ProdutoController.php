@@ -22,15 +22,13 @@ class ProdutoController {
     }
 
     public function salvarProduto(array $dados) {
-        $nome = $dados['nome'];
-        $descricao = $dados['descricao'];
-        $fornecedorId = $_SESSION['user']['id'];
-
-        $this->produtoService->criarProduto($nome, $descricao, $fornecedorId);
-
-        // Redireciona de volta para a lista de produtos
-        header("Location: /estoque.php");
-        exit();
+        $dados['fornecedorId'] = $_SESSION['user']['id'];
+        try {
+            $this->produtoService->criarProduto($dados);
+            header("Location: /estoque.php?success=produto_criado");
+        } catch (Exception $e) {
+            header("Location: /produto.php?error=" . urlencode($e->getMessage()));
+        }
     }
 
     public function editarProduto(int $id) {
@@ -44,16 +42,14 @@ class ProdutoController {
     }
 
     public function atualizarProduto(int $id, array $dados) {
-        $nome = $dados['nome'];
-        $descricao = $dados['descricao'];
+        $dados['id'] = $id;
 
-        $produto = new Produto($nome, $descricao);
-        $produto->setId($id);
-
-        $this->produtoService->atualizarProduto($produto);
-
-        // Redireciona de volta para a lista de produtos ou estoque
-        header("Location: /estoque.php");
+        try {
+            $this->produtoService->atualizarProduto($dados);
+            header("Location: /estoque.php?success=produto_atualizado");
+        } catch (Exception $e) {
+            header("Location: /produto.php?acao=editar&id=" . $id . "&error=" . urlencode($e->getMessage()));
+        }
         exit();
     }
 

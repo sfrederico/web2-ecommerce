@@ -29,6 +29,14 @@ CREATE TABLE produto (
     fornecedor_id INT NOT NULL REFERENCES fornecedor(id) ON DELETE CASCADE
 );
 
+-- Tabela de estoque
+CREATE TABLE ESTOQUE (
+    ID SERIAL PRIMARY KEY,
+    PRODUTO_ID INT NOT NULL REFERENCES PRODUTO(ID) ON DELETE CASCADE,
+    QUANTIDADE INT NOT NULL CHECK (QUANTIDADE >= 0),
+    PRECO DECIMAL(10, 2) NOT NULL CHECK (PRECO >= 0)
+);
+
 -- Inserção de um usuário administrador
 INSERT INTO USUARIO (NOME_USUARIO, SENHA, NOME, PAPEL, TELEFONE, EMAIL)
 VALUES ('admin', '123123', 'Administrador', 'admin', '123456789', 'admin@example.com');
