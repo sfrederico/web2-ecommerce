@@ -10,7 +10,14 @@ class EstoqueController {
     }
 
     public function listarProdutos(int $fornecedorId) {
-        $produtos = $this->estoqueService->buscarProdutosPorFornecedor($fornecedorId);
+        $search = $_GET['search'] ?? null;
+
+        if (empty($search)) {
+            $produtos = $this->estoqueService->buscarProdutosPorFornecedor($fornecedorId);
+        } else {
+            $produtos = $this->estoqueService->buscarProdutosPorFiltro($fornecedorId, $search);
+        }
+
         include __DIR__ . '/../views/estoque/lista.php';
     }
 }

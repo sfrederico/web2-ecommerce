@@ -31,4 +31,17 @@ class EstoqueService {
         return $produtos;
     }
 
+    public function buscarProdutosPorFiltro(int $fornecedorId, string $search): array {
+        $produtos = $this->produtoDao->getProdutosPorFiltro($fornecedorId, $search);
+
+        foreach ($produtos as $produto) {
+            $estoque = $this->estoqueDao->getEstoqueByProdutoId($produto->getId());
+            if ($estoque) {
+                $produto->setEstoque($estoque);
+            }
+        }
+
+        return $produtos;
+    }
+
 }

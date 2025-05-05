@@ -26,6 +26,16 @@ if (!isset($_SESSION['user'])) {
         <div class="text-center mb-4">
             <a href="/produto.php" class="btn btn-primary">Criar Produto</a>
         </div>
+        <form method="GET" action="/estoque.php" class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-10">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar por ID ou nome do produto" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                </div>
+            </div>
+        </form>
         <?php if (empty($produtos)): ?>
             <div class="alert alert-warning text-center" role="alert">
                 O estoque está vazio. Nenhum produto encontrado.

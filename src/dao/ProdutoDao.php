@@ -84,5 +84,26 @@ class ProdutoDao {
 
         return $produtos;
     }
+
+    public function getProdutosPorFiltro(int $fornecedorId, string $search): array {
+        $query = "SELECT * FROM produto WHERE fornecedor_id = :fornecedorId AND (CAST(id AS TEXT) = :search OR nome ILIKE :searchLike)";
+        $params = [
+            ':fornecedorId' => $fornecedorId,
+            ':search' => $search,
+            ':searchLike' => '%' . $search . '%'
+        ];
+
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($params);
+
+        $produtos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $produto = new Produto($row['nome'], $row['descricao']);
+            $produto->setId($row['id']);
+            $produtos[] = $produto;
+        }
+
+        return $produtos;
+    }
 }
 ?>
