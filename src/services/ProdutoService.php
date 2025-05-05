@@ -41,10 +41,30 @@ class ProdutoService {
     }
 
     public function buscarProdutoPorId(int $id): ?Produto {
-        return $this->produtoDao->getProdutoById($id);
+        $produto = $this->produtoDao->getProdutoById($id);
+        $estoque = $this->estoqueDao->getEstoqueByProdutoId($id);
+        $produto->setEstoque($estoque);
+        return $produto;
     }
 
-    public function atualizarProduto(Produto $produto): void {
+    public function atualizarProduto(array $dados): void {
+        // Validar se o produto existe
+        $produtoExistente = $this->produtoDao->getProdutoById($dados['id']);
+        if (!$produtoExistente) {
+            throw new Exception("Produto não encontrado.");
+        }
+        $estoqueExistente = $this->estoqueDao->getEstoqueByProdutoId($dados['id']);
+        if (!$estoqueExistente) {
+            throw new Exception("Estoque não encontrado.");
+        }
+
+        $produto = new Produto($dados['nome'], $dados['descricao']);
+        $produto->setId($produtoExistente->getId());
+
+        $estoque = new Estoque($dados['quantidade'], $dados['preco']);
+        $estoque->setId($estoqueExistente->getId());
+
         $this->produtoDao->update($produto);
+        $this->estoqueDao->update($estoque);
     }
 }
