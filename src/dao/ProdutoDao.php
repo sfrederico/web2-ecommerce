@@ -9,15 +9,17 @@ class ProdutoDao {
         $this->connection = $dbConnection;
     }
 
-    public function create(Produto $produto): bool {
-        $query = "INSERT INTO produto (nome, descricao, fornecedor_id) VALUES (:nome, :descricao, :fornecedorId)";
+    public function create(Produto $produto): int {
+        $query = "INSERT INTO produto (nome, descricao, fornecedor_id) VALUES (:nome, :descricao, :fornecedorId) RETURNING id";
         $stmt = $this->connection->prepare($query);
 
-        return $stmt->execute([
+        $stmt->execute([
             ':nome' => $produto->getNome(),
             ':descricao' => $produto->getDescricao(),
             ':fornecedorId' => $produto->getFornecedor()->getUsuario()->getId(),
         ]);
+
+        return (int) $stmt->fetchColumn();
     }
 
     public function update(Produto $produto): bool {

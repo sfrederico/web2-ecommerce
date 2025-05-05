@@ -30,6 +30,14 @@ if (!SessionHelper::isSessionStarted()) {
                 <label for="descricao" class="form-label">Descrição</label>
                 <textarea id="descricao" name="descricao" class="form-control" rows="4" placeholder="Digite a descrição do produto" required></textarea>
             </div>
+            <div class="mb-3">
+                <label for="quantidade" class="form-label">Quantidade</label>
+                <input type="number" id="quantidade" name="quantidade" class="form-control" min="0" required>
+            </div>
+            <div class="mb-3">
+                <label for="preco" class="form-label">Preço</label>
+                <input type="number" id="preco" name="preco" class="form-control" step="0.01" min="0" required>
+            </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Salvar</button>
                 <a href="/estoque.php" class="btn btn-secondary">Cancelar</a>
