@@ -19,10 +19,6 @@ if (!SessionHelper::isSessionStarted()) {
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarContent">
-            <form class="d-flex me-auto" method="GET" action="/src/views/produto/lista.php">
-                <input class="form-control me-2" type="search" name="search" placeholder="Buscar produtos..." required>
-                <button class="btn btn-outline-success" type="submit">Buscar</button>
-            </form>
             <ul class="navbar-nav ms-auto">
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item dropdown">
