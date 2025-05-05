@@ -24,25 +24,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'criar':
             $controller->salvarProduto($_POST);
             break;
+        case 'excluir':
+            $controller->excluirProduto((int)$_POST['id']);
+            break;
         default:
             break;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $acao = $_GET['acao'] ?? '';
-    switch ($acao) {
-        case 'editar':
-            if (isset($_GET['id'])) {
-                $controller->editarProduto((int)$_GET['id']);
-            }
-            break;
-        case 'excluir':
-            if (isset($_GET['id'])) {
-                $controller->excluirProduto((int)$_GET['id']);
-            }
-            break;
-        default:
-            $controller->mostrarFormularioCriacao();
-            break;
+    if ($acao === 'editar') {
+        $controller->editarProduto((int)$_GET['id']);
+    } else {
+        $controller->mostrarFormularioCriacao();
     }
-} 
+}
 

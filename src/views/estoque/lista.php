@@ -53,7 +53,11 @@ if (!isset($_SESSION['user'])) {
                                 <p class="text-muted">ID: <?php echo htmlspecialchars($produto->getId()); ?></p>
                                 <div class="d-flex justify-content-between">
                                     <a href="/produto.php?acao=editar&id=<?php echo $produto->getId(); ?>" class="btn btn-sm btn-outline-primary">Editar</a>
-                                    <a href="/produto.php?acao=excluir&id=<?php echo $produto->getId(); ?>" class="btn btn-sm btn-outline-danger">Excluir</a>
+                                    <form action="/produto.php" method="POST" style="display: inline;">
+                                        <input type="hidden" name="acao" value="excluir">
+                                        <input type="hidden" name="id" value="<?php echo $produto->getId(); ?>">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
