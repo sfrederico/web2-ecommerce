@@ -1,45 +1,20 @@
 <?php
-require_once __DIR__ . '/../controllers/UsuarioController.php';
-require_once __DIR__ . '/../controllers/ClienteController.php';
-require_once __DIR__ . '/../controllers/FornecedorController.php';
-require_once __DIR__ . '/../model/Cliente.php';
-require_once __DIR__ . '/../model/Fornecedor.php';
+require_once __DIR__ . '/../services/ContaService.php';
 
 class ContaController {
-    private UsuarioController $usuarioController;
-    private ClienteController $clienteController;
-    private FornecedorController $fornecedorController;
+    private ContaService $contaService;
 
     public function __construct($dbConnection) {
-        $this->usuarioController = new UsuarioController($dbConnection);
-        $this->clienteController = new ClienteController($dbConnection);
-        $this->fornecedorController = new FornecedorController($dbConnection);
+        $this->contaService = new ContaService($dbConnection);
     }
 
     public function handleCreateAccount(array $postData): void {
-        $nomeUsuario = $postData['nomeUsuario'];
-        $senha = $postData['senha'];
-        $nome = $postData['nome'];
-        $papel = $postData['papel'];
-        $telefone = $postData['telefone'];
-        $email = $postData['email'];
-
-        // Create the user
-        $usuario = $this->usuarioController->createUsuario($nomeUsuario, $senha, $nome, $papel, $telefone, $email);
-
-        $cliente = false;
-        $fonecedor = false;
-        // Handle specific roles
-        if ($papel === 'cliente') {
-            $cartaoCredito = $postData['cartaoCredito'];
-            $cliente = $this->clienteController->createCliente($usuario, $cartaoCredito);
-        } elseif ($papel === 'fornecedor') {
-            $descricao = $postData['descricao'];
-            $fornecedor = $this->fornecedorController->createFornecedor($usuario, $descricao);
-        }
-
-        if ($usuario && ($cliente || $fornecedor)) {
+        try {
+            $this->contaService->criarConta($postData);
             header("Location: /login.php?account_created=true");
+        } catch (Exception $e) {
+            header("Location: /create_account.php?error=" . urlencode($e->getMessage()));
         }
+        exit();
     }
 }

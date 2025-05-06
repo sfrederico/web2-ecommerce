@@ -51,6 +51,10 @@ class Usuario {
         $this->nomeUsuario = $nomeUsuario;
     }
 
+    public function setId(int $id): void {
+        $this->id = $id;
+    }
+
     public function setSenha(string $senha): void {
         $this->senha = $senha;
     }
