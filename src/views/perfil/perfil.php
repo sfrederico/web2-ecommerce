@@ -27,51 +27,52 @@ if (!isset($_SESSION['user'])) {
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     <div class="container">
         <h1 class="title">Update Profile</h1>
-        <form action="../perfil.php" method="POST" class="form">
+        <form action="/perfil.php?action=atualizar" method="POST">
             <div class="form-group">
-                <label for="nome">Name:</label>
-                <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($usuario->getNome()); ?>" required>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($usuario->getNome()) ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="nomeUsuario">Username:</label>
-                <input type="text" id="nomeUsuario" name="nomeUsuario" value="<?php echo htmlspecialchars($usuario->getNomeUsuario()); ?>" required>
+                <label for="nomeUsuario">Nome de Usuário:</label>
+                <input type="text" id="nomeUsuario" name="nomeUsuario" value="<?= htmlspecialchars($usuario->getNomeUsuario()) ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="senha">Password:</label>
-                <input type="password" id="senha" name="senha" value="<?php echo htmlspecialchars($usuario->getSenha()); ?>" required>
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" value="<?= htmlspecialchars($usuario->getSenha()) ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($usuario->getEmail()); ?>" required>
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario->getEmail()) ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="telefone">Phone:</label>
-                <input type="text" id="telefone" name="telefone" value="<?php echo htmlspecialchars($usuario->getTelefone()); ?>" required>
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" value="<?= htmlspecialchars($usuario->getTelefone()) ?>">
             </div>
-        
+
             <?php if ($usuario->getPapel() === 'cliente'): ?>
                 <div class="form-group">
-                    <label for="cartaoCredito">Credit card:</label>
-                    <input type="text" id="cartaoCredito" name="cartaoCredito" value="<?php echo htmlspecialchars($cliente->getCartaoCredito()); ?>" required>
+                    <label for="cartaoCredito">Cartão de Crédito:</label>
+                    <input type="text" id="cartaoCredito" name="cartaoCredito" value="<?= htmlspecialchars($perfilEspecifico->getCartaoCredito()) ?>">
                 </div>
             <?php elseif ($usuario->getPapel() === 'fornecedor'): ?>
                 <div class="form-group">
-                    <label for="descricao">Descricao:</label>
-                    <input type="text" id="descricao" name="descricao" value="<?php echo htmlspecialchars($fornecedor->getDescricao()); ?>" required>
+                    <label for="descricao">Descrição:</label>
+                    <input type="text" id="descricao" name="descricao" value="<?= htmlspecialchars($perfilEspecifico->getDescricao()) ?>">
                 </div>
             <?php endif; ?>
 
-            <button type="submit" class="btn btn-success">Update</button>
+            <button type="submit" class="btn btn-success">Atualizar Perfil</button>
         </form>
 
-        <form action="../perfil.php" method="POST" class="form" onsubmit="return confirm('Are you sure you want to delete your account?');">
-            <input type="hidden" name="action" value="delete">
-            <button type="submit" class="btn btn-danger">Delete Account</button>
-        </form>
+        <div class="form-group">
+            <form action="/perfil.php?action=deletar" method="POST">
+                <button type="submit" class="btn btn-danger">Deletar Conta</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
