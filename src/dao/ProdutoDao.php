@@ -60,20 +60,16 @@ class ProdutoDao {
     }
 
     public function getTodosProdutos(): array {
-        $query = "SELECT * FROM produto WHERE CAST(id AS TEXT) = :search OR nome ILIKE :searchLike";
-        $params = [
-            ':search' => $search,
-            ':searchLike' => '%' . $search . '%'
-        ];
-
+        $query = "SELECT * FROM produto";
         $stmt = $this->connection->prepare($query);
-        $stmt->execute($params);
+        $stmt->execute();
 
         $produtos = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $produto = new Produto($row['nome'], $row['descricao']);
             $produto->setId($row['id']);
             $produto->setFoto($row['foto'] ?? null);
+            $produto->setFornecedorId($row['fornecedor_id']);
             $produtos[] = $produto;
         }
         return $produtos;

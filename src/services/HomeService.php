@@ -57,10 +57,21 @@ class HomeService {
     //     return $produtos;
     // }
     public function buscarTodosProdutos() {
-        require_once __DIR__ . '/../dao/ProdutoDao.php';
-        $produtoDao = new ProdutoDao($this->dbConnection);
-        
-        return $produtoDao->getTodosProdutos();
-    }
+        $produtos = $this->produtoDao->getTodosProdutos();
 
+        foreach ($produtos as $produto) {
+            $estoque = $this->estoqueDao->getEstoqueByProdutoId($produto->getId());
+            if ($estoque) {
+                $produto->setEstoque($estoque);
+            }
+            $fornecedor = $this->fornecedorDao->getFornecedorById($produto->getFornecedorId());
+            if ($fornecedor) {
+                $produto->setFornecedor($fornecedor);
+            }
+            
+        }
+
+        return $produtos;
+    }
+    
 }
