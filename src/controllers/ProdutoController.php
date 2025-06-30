@@ -43,6 +43,7 @@ class ProdutoController {
 
     public function atualizarProduto(int $id, array $dados) {
         $dados['id'] = $id;
+        $dados['fornecedorId'] = $_SESSION['user']['id'];
 
         try {
             $this->produtoService->atualizarProduto($dados);

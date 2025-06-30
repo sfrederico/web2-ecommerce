@@ -85,6 +85,13 @@ class ProdutoService {
         $estoque = new Estoque($dados['quantidade'], $dados['preco']);
         $estoque->setId($estoqueExistente->getId());
 
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $fotoPath = $this->salvarFotoProduto($_FILES['foto'], $dados['fornecedorId'], $dados['id']);
+            $produto->setFoto($fotoPath);
+        } else {
+            $produto->setFoto($produtoExistente->getFoto());
+        }
+
         $this->produtoDao->update($produto);
         $this->estoqueDao->update($estoque);
     }
