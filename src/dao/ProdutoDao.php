@@ -23,13 +23,23 @@ class ProdutoDao {
     }
 
     public function update(Produto $produto): bool {
-        $query = "UPDATE produto SET nome = :nome, descricao = :descricao WHERE id = :id";
+        $query = "UPDATE produto SET nome = :nome, descricao = :descricao, foto = :foto WHERE id = :id";
         $stmt = $this->connection->prepare($query);
 
         return $stmt->execute([
             ':nome' => $produto->getNome(),
             ':descricao' => $produto->getDescricao(),
+            ':foto' => $produto->getFoto(),
             ':id' => $produto->getId(),
+        ]);
+    }
+
+    public function updateFoto(int $produtoId, string $fotoPath): bool {
+        $query = "UPDATE produto SET foto = :foto WHERE id = :id";
+        $stmt = $this->connection->prepare($query);
+        return $stmt->execute([
+            ':foto' => $fotoPath,
+            ':id' => $produtoId,
         ]);
     }
 
@@ -42,6 +52,7 @@ class ProdutoDao {
         if ($row) {
             $produto = new Produto($row['nome'], $row['descricao']);
             $produto->setId($row['id']);
+            $produto->setFoto($row['foto'] ?? null);
             return $produto;
         }
 
@@ -79,6 +90,7 @@ class ProdutoDao {
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $produto = new Produto($row['nome'], $row['descricao']);
             $produto->setId($row['id']);
+            $produto->setFoto($row['foto']);
             $produtos[] = $produto;
         }
 
@@ -100,6 +112,7 @@ class ProdutoDao {
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $produto = new Produto($row['nome'], $row['descricao']);
             $produto->setId($row['id']);
+            $produto->setFoto($row['foto']);
             $produtos[] = $produto;
         }
 

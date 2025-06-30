@@ -20,7 +20,7 @@ if (!SessionHelper::isSessionStarted()) {
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     <div class="container my-5">
         <h1 class="text-center mb-4">Criar Produto</h1>
-        <form action="/produto.php" method="POST" class="p-4 border rounded shadow-sm bg-light">
+        <form action="/produto.php" method="POST" class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
             <input type="hidden" name="acao" value="criar">
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome do Produto</label>
@@ -37,6 +37,10 @@ if (!SessionHelper::isSessionStarted()) {
             <div class="mb-3">
                 <label for="preco" class="form-label">Preço</label>
                 <input type="number" id="preco" name="preco" class="form-control" step="0.01" min="0" required>
+            </div>
+            <div class="mb-3">
+                <label for="foto" class="form-label">Foto do Produto</label>
+                <input type="file" id="foto" name="foto" class="form-control" accept="image/*" required>
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Salvar</button>

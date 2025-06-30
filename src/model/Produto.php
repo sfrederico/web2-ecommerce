@@ -8,6 +8,7 @@ class Produto {
     private string $descricao;
     private Fornecedor $fornecedor;
     private ?Estoque $estoque = null;
+    private ?string $foto = null;
 
     public function __construct(string $nome, string $descricao) {
         $this->nome = $nome;
@@ -34,6 +35,10 @@ class Produto {
         return $this->estoque;
     }
 
+    public function getFoto(): ?string {
+        return $this->foto;
+    }
+
     public function setNome(string $nome): void {
         $this->nome = $nome;
     }
@@ -52,5 +57,9 @@ class Produto {
 
     public function setEstoque(Estoque $estoque): void {
         $this->estoque = $estoque;
+    }
+
+    public function setFoto(?string $foto): void {
+        $this->foto = $foto;
     }
 }

@@ -20,6 +20,10 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 # Ensure the script has execution permissions
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+#Cria a pasta de uploads e define permissões
+RUN mkdir -p /var/www/html/static/uploads \
+    && chmod -R 777 /var/www/html/static/uploads
+
 # Expose port 80 for the Apache server
 EXPOSE 80
 
