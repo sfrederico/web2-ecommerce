@@ -20,7 +20,7 @@ if (!SessionHelper::isSessionStarted()) {
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     <div class="container my-5">
         <h1 class="text-center mb-4">Editar Produto</h1>
-        <form action="/produto.php?acao=atualizar&id=<?php echo $produto->getId(); ?>" method="POST" class="p-4 border rounded shadow-sm bg-light">
+        <form action="/produto.php?acao=atualizar&id=<?php echo $produto->getId(); ?>" method="POST" class="p-4 border rounded shadow-sm bg-light" enctype="multipart/form-data">
             <input type="hidden" name="acao" value="atualizar">
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome do Produto</label>
@@ -41,6 +41,17 @@ if (!SessionHelper::isSessionStarted()) {
                 <input type="number" id="preco" name="preco" class="form-control" 
                        value="<?php echo htmlspecialchars($produto->getEstoque()->getPreco() ?? 0); ?>" 
                        placeholder="Digite o preço" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="foto" class="form-label">Foto do Produto</label>
+                <div class="d-flex align-items-center gap-3">
+                    <?php if ($produto->getFoto()): ?>
+                        <img src="<?php echo htmlspecialchars($produto->getFoto()); ?>" alt="Foto atual" class="img-thumbnail mb-2" style="max-width:120px;">
+                    <?php else: ?>
+                        <span class="text-muted">Sem foto cadastrada</span>
+                    <?php endif; ?>
+                    <input type="file" id="foto" name="foto" class="form-control" accept="image/*">
+                </div>
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Salvar</button>
