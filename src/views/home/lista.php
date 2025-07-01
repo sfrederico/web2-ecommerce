@@ -41,11 +41,8 @@ if (!isset($_SESSION['user'])) {
 <body>
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     <div class="container my-5">
-        <h1 class="text-center mb-4">Home</h1>
-        <div class="text-center mb-4">
-            <a href="/produto.php" class="btn text-white rounded-pill" style="background: #4d41d3" >Criar Produto</a>
-        </div>
-        <form method="GET" action="/estoque.php" class="mb-4">
+        <h1 class="text-center mb-4">Bem-vindo ao SHEEP COMMERCE</h1>
+        <form method="GET" action="/home.php" class="mb-4">
             <div class="row g-2">
                 <div class="col-md-10">
                     <input type="text" name="search" class="form-control rounded-pill" placeholder="Buscar por ID ou nome do produto" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
@@ -57,7 +54,7 @@ if (!isset($_SESSION['user'])) {
         </form>
         <?php if (empty($produtos)): ?>
             <div class="alert alert-warning text-center" role="alert">
-                O estoque está vazio. Nenhum produto encontrado.
+                Os estoques estão vazios. Nenhum produto encontrado.
             </div>
         <?php else: ?>
             <div class="row g-4">
@@ -86,12 +83,11 @@ if (!isset($_SESSION['user'])) {
                                 <span class="text-muted small">Fornecedor:</span><br>
                                 <span class="descricao-produto"><?php echo htmlspecialchars($produto->getFornecedor()->getUsuario()->getNome() ?? 'N/A'); ?></span>
                             </div>
-                            <div class="d-flex justify-content-between mt-2">
-                                <a href="/produto.php?acao=editar&id=<?php echo $produto->getId(); ?>" class="btn btn-sm btn-outline-primary rounded-pill">Editar</a>
-                                <form action="/produto.php" method="POST" style="display: inline;">
-                                    <input type="hidden" name="acao" value="excluir">
-                                    <input type="hidden" name="id" value="<?php echo $produto->getId(); ?>">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">Excluir</button>
+                            <div class="d-flex justify-content-center mt-2">
+                                <form method="POST" action="/carrinho.php" class="d-inline">
+                                    <input type="hidden" name="acao" value="adicionar">
+                                    <input type="hidden" name="produto_id" value="<?php echo $produto->getId(); ?>">
+                                    <button type="submit" class="btn text-white btn-sm" style="background: #4d41d3;">Adicionar ao carrinho</button>
                                 </form>
                             </div>
                         </div>

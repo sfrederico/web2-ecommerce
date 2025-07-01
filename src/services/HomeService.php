@@ -44,18 +44,6 @@ class HomeService {
         return $produtos;
     }
 
-    // public function listarTodosProdutos(): array {
-    //     $produtos = $this->produtoDao->getTodosProdutos();
-
-    //     foreach ($produtos as $produto) {
-    //         $estoque = $this->estoqueDao->getEstoqueByProdutoId($produto->getId());
-    //         if ($estoque) {
-    //             $produto->setEstoque($estoque);
-    //         }
-    //     }
-
-    //     return $produtos;
-    // }
     public function buscarTodosProdutos() {
         $produtos = $this->produtoDao->getTodosProdutos();
 
