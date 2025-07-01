@@ -15,5 +15,10 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['papel'] !== 'cliente') {
 }
 
 $controller = new CarrinhoController($dbConnection);
-$controller->listarProdutosNoCarrinho();
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $controller->listarProdutosNoCarrinho();
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $controller->adicionarProdutoAoCarrinho($_POST['produto_id']);
+}
 

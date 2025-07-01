@@ -13,6 +13,27 @@
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     <div class="container my-5">
         <h1 class="text-center mb-4">Carrinho</h1>
+        
+        <!-- Botão de teste para adicionar produto -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Teste - Adicionar Produto</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/carrinho.php">
+                            <input type="hidden" name="produto_id" value="1">
+                            <input type="hidden" name="quantidade" value="2">
+                            <input type="hidden" name="preco_unitario" value="29.99">
+                            <button type="submit" class="btn btn-primary">
+                                Adicionar Produto ID 1 ao Carrinho (Teste)
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
