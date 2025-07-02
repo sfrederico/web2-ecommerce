@@ -19,6 +19,20 @@ $controller = new CarrinhoController($dbConnection);
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $controller->listarProdutosNoCarrinho();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->adicionarProdutoAoCarrinho($_POST['produto_id']);
+    $action = $_POST['action'] ?? 'adicionar';
+    
+    switch ($action) {
+        case 'adicionar':
+            $controller->adicionarProdutoAoCarrinho($_POST['produto_id']);
+            break;
+        case 'remover':
+            $controller->removerItem();
+            break;
+        case 'alterar_quantidade':
+            $controller->alterarQuantidade();
+            break;
+        default:
+            $controller->adicionarProdutoAoCarrinho($_POST['produto_id']);
+    }
 }
 

@@ -87,4 +87,64 @@ class CarrinhoService {
         
         return $total;
     }
+
+    public function removerItem(int $clienteId, int $itemId): bool {
+        // Buscar pedido não confirmado do cliente
+        $pedido = $this->pedidoDao->getPedidoNaoConfirmado($clienteId);
+        
+        if (!$pedido) {
+            throw new Exception("Carrinho não encontrado.");
+        }
+        
+        // Verificar se o item pertence ao pedido do cliente (segurança)
+        $itens = $this->itemPedidoDao->getItensByPedidoId($pedido->getId());
+        $itemEncontrado = false;
+        
+        foreach ($itens as $item) {
+            if ($item->getId() === $itemId) {
+                $itemEncontrado = true;
+                break;
+            }
+        }
+        
+        if (!$itemEncontrado) {
+            throw new Exception("Item não encontrado no carrinho.");
+        }
+        
+        // Remover o item
+        return $this->itemPedidoDao->delete($itemId);
+    }
+
+    public function alterarQuantidade(int $clienteId, int $itemId, int $novaQuantidade): bool {
+        if ($novaQuantidade <= 0) {
+            return $this->removerItem($clienteId, $itemId);
+        }
+        
+        // Buscar pedido não confirmado do cliente
+        $pedido = $this->pedidoDao->getPedidoNaoConfirmado($clienteId);
+        
+        if (!$pedido) {
+            throw new Exception("Carrinho não encontrado.");
+        }
+        
+        // Buscar item para verificar se existe e pertence ao cliente
+        $itens = $this->itemPedidoDao->getItensByPedidoId($pedido->getId());
+        $itemEncontrado = null;
+        
+        foreach ($itens as $item) {
+            if ($item->getId() === $itemId) {
+                $itemEncontrado = $item;
+                break;
+            }
+        }
+        
+        if (!$itemEncontrado) {
+            throw new Exception("Item não encontrado no carrinho.");
+        }
+        
+        // Atualizar quantidade
+        $itemEncontrado->setQuantidade($novaQuantidade);
+        
+        return $this->itemPedidoDao->update($itemEncontrado);
+    }
 }

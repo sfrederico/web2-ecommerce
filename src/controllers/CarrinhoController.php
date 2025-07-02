@@ -22,4 +22,47 @@ class CarrinhoController {
         $this->carrinhoService->adicionarProduto($clienteId, $productId);
         header("Location: /carrinho.php");
     }
+
+    public function removerItem() {
+        if (!isset($_POST['item_id'])) {
+            $_SESSION['erro'] = "Item não especificado.";
+            header("Location: /carrinho.php");
+            return;
+        }
+        
+        try {
+            $clienteId = $_SESSION['user']['id'];
+            $itemId = (int)$_POST['item_id'];
+            
+            $this->carrinhoService->removerItem($clienteId, $itemId);
+            $_SESSION['sucesso'] = "Item removido do carrinho!";
+            
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+        }
+        
+        header("Location: /carrinho.php");
+    }
+
+    public function alterarQuantidade() {
+        if (!isset($_POST['item_id']) || !isset($_POST['quantidade'])) {
+            $_SESSION['erro'] = "Dados incompletos.";
+            header("Location: /carrinho.php");
+            return;
+        }
+        
+        try {
+            $clienteId = $_SESSION['user']['id'];
+            $itemId = (int)$_POST['item_id'];
+            $quantidade = (int)$_POST['quantidade'];
+            
+            $this->carrinhoService->alterarQuantidade($clienteId, $itemId, $quantidade);
+            $_SESSION['sucesso'] = "Quantidade atualizada!";
+            
+        } catch (Exception $e) {
+            $_SESSION['erro'] = $e->getMessage();
+        }
+        
+        header("Location: /carrinho.php");
+    }
 }

@@ -109,4 +109,21 @@ class ItemPedidoDao {
         return $itens;
     }
 
+    public function delete(int $itemId): bool {
+        $query = "DELETE FROM ITEM_PEDIDO WHERE ID = :id";
+        $stmt = $this->connection->prepare($query);
+        
+        return $stmt->execute([':id' => $itemId]);
+    }
+
+    public function deleteByPedidoEProduto(int $pedidoId, int $produtoId): bool {
+        $query = "DELETE FROM ITEM_PEDIDO WHERE PEDIDO_ID = :pedidoId AND PRODUTO_ID = :produtoId";
+        $stmt = $this->connection->prepare($query);
+        
+        return $stmt->execute([
+            ':pedidoId' => $pedidoId,
+            ':produtoId' => $produtoId
+        ]);
+    }
+
 }
