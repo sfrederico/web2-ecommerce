@@ -123,6 +123,14 @@
                                 Adicionar Produto ID 2 ao Carrinho (Teste)
                             </button>
                         </form>
+                        <form method="POST" action="/carrinho.php">
+                            <input type="hidden" name="produto_id" value="3">
+                            <input type="hidden" name="quantidade" value="2">
+                            <input type="hidden" name="preco_unitario" value="29.99">
+                            <button type="submit" class="btn btn-primary mt-2">
+                                Adicionar Produto ID 3 ao Carrinho (Teste)
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

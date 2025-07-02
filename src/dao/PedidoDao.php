@@ -24,16 +24,46 @@ class PedidoDao {
         return (int) $stmt->fetchColumn();
     }
 
-    public function getPedidoNaoConfirmado(int $clienteId): ?Pedido {
-        $query = "SELECT * FROM pedido WHERE cliente_id = :CLIENTE_ID AND confirmado = false LIMIT 1";
+    public function getPedidosByClienteId(int $clienteId): array {
+        $query = "SELECT * FROM PEDIDO 
+                  WHERE CLIENTE_ID = :clienteId
+                  AND CONFIRMADO = TRUE
+                  ORDER BY DATA_PEDIDO DESC";
+        
         $stmt = $this->connection->prepare($query);
-        $stmt->execute([':CLIENTE_ID' => $clienteId]);
+        $stmt->execute([':clienteId' => $clienteId]);
+        
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedido = new Pedido($row['numero'], $row['cliente_id']);
+            $pedido->setId($row['id']);
+            $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setDataEntrega($row['data_entrega']);
+            $pedido->setSituacao($row['situacao']);
+            $pedido->setConfirmado($row['confirmado']);
+            $pedido->setValorTotal($row['valor_total']);
+            
+            $pedidos[] = $pedido;
+        }
+        
+        return $pedidos;
+    }
 
+    public function getPedidoNaoConfirmado(int $clienteId): ?Pedido {
+        $query = "SELECT * FROM PEDIDO 
+                  WHERE CLIENTE_ID = :clienteId AND CONFIRMADO = FALSE 
+                  LIMIT 1";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':clienteId' => $clienteId]);
+        
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         if ($row) {
             $pedido = new Pedido($row['numero'], $row['cliente_id']);
             $pedido->setId($row['id']);
             $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setDataEntrega($row['data_entrega']);
             $pedido->setSituacao($row['situacao']);
             $pedido->setConfirmado($row['confirmado']);
             $pedido->setValorTotal($row['valor_total']);
