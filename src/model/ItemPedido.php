@@ -16,7 +16,6 @@ class ItemPedido {
         $this->produtoId = $produtoId;
         $this->quantidade = $quantidade;
         $this->precoUnitario = $precoUnitario;
-        $this->subtotal = calcularSubtotal();
     }
 
     public function getId(): int {
@@ -73,7 +72,7 @@ class ItemPedido {
         return $this->subtotal;
     }
 
-    private function calcularSubtotal(): void {
+    public function calcularSubtotal(): void {
         $this->subtotal = $this->quantidade * $this->precoUnitario;
     }
 
