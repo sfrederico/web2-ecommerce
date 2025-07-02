@@ -62,4 +62,29 @@ class CarrinhoService {
             $itemPedidoId = $this->itemPedidoDao->create($itemPedido);
         }
     }
+    
+    public function listarItensDoCarrinho(int $clienteId): array {
+        // Buscar pedido não confirmado (carrinho atual)
+        $pedido = $this->pedidoDao->getPedidoNaoConfirmado($clienteId);
+        
+        if (!$pedido) {
+            return []; // Carrinho vazio
+        }
+        
+        // Buscar itens do pedido
+        $itens = $this->itemPedidoDao->getItensByPedidoId($pedido->getId());
+        
+        return $itens;
+    }
+
+    public function calcularTotalCarrinho(int $clienteId): float {
+        $itens = $this->listarItensDoCarrinho($clienteId);
+        $total = 0.0;
+        
+        foreach ($itens as $item) {
+            $total += $item->getSubtotal();
+        }
+        
+        return $total;
+    }
 }

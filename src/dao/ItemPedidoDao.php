@@ -72,4 +72,41 @@ class ItemPedidoDao {
         return null;
     }
 
+    public function getItensByPedidoId(int $pedidoId): array {
+        $query = "SELECT ip.id, ip.pedido_id, ip.produto_id, ip.quantidade, ip.preco_unitario, ip.subtotal,
+                         p.nome as produto_nome, p.descricao as produto_descricao, p.foto as produto_foto
+                  FROM ITEM_PEDIDO ip
+                  INNER JOIN produto p ON ip.produto_id = p.id
+                  WHERE ip.pedido_id = :pedidoId";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':pedidoId' => $pedidoId]);
+        
+        $itens = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $itemPedido = new ItemPedido(
+                (int)$row['pedido_id'],
+                (int)$row['produto_id'],
+                (int)$row['quantidade'],
+                (float)$row['preco_unitario']
+            );
+            $itemPedido->setId((int)$row['id']);
+            
+            // Criar produto com dados básicos
+            $produto = new Produto(
+                $row['produto_nome'],
+                $row['produto_descricao']
+            );
+            $produto->setId((int)$row['produto_id']);
+            if ($row['produto_foto']) {
+                $produto->setFoto($row['produto_foto']);
+            }
+            
+            $itemPedido->setProduto($produto);
+            $itens[] = $itemPedido;
+        }
+        
+        return $itens;
+    }
+
 }
