@@ -23,4 +23,17 @@ class PedidoController {
             include __DIR__ . '/../views/pedidos/meus-pedidos.php';
         }
     }
+
+    public function getDetalhesPedido(int $pedidoId) {
+        $clienteId = $_SESSION['user']['id'];
+        
+        try {
+            $detalhes = $this->pedidoService->getDetalhesPedido($clienteId, $pedidoId);
+            
+            echo $detalhes;
+
+        } catch (Exception $e) {
+            echo "Erro ao carregar detalhes: " . $e->getMessage();
+        }
+    }
 }

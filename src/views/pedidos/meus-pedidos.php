@@ -73,8 +73,12 @@
                                             <p class="mb-0"><?= $pedido->getDataEntrega() ? date('d/m/Y', strtotime($pedido->getDataEntrega())) : '-' ?></p>
                                         </div>
                                         <div class="col-md-2 text-end">
-                                            <a href="/pedido-detalhes.php?id=<?= $pedido->getId() ?>" 
-                                               class="btn btn-primary">Ver Detalhes</a>
+                                            <button type="button" class="btn btn-primary" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#modalDetalhes"
+                                                    data-pedido-id="<?= $pedido->getId() ?>">
+                                                Ver Detalhes
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -85,6 +89,60 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-labelledby="modalDetalhesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetalhesLabel">Detalhes do Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal totalmente em branco por enquanto -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('modalDetalhes');
+        const modalBody = modal.querySelector('.modal-body');
+        
+        modal.addEventListener('show.bs.modal', function (event) {
+            // Botão que acionou o modal
+            const button = event.relatedTarget;
+            
+            // Pegar o ID do pedido do data-attribute
+            const pedidoId = button.getAttribute('data-pedido-id');
+            
+            // Mostrar loading
+            modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
+            
+            // Fazer requisição AJAX
+            fetch(`/meus-pedidos.php?action=detalhes&pedido_id=${pedidoId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na requisição');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    // Colocar o resultado no modal
+                    modalBody.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    modalBody.innerHTML = '<div class="alert alert-danger">Erro ao carregar detalhes do pedido.</div>';
+                });
+        });
+    });
+    </script>
+
 </body>
 </html>
 

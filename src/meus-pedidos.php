@@ -17,5 +17,11 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['papel'] !== 'cliente') {
 $controller = new PedidoController($dbConnection);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // Requisição para detalhes
+    if (isset($_GET['action']) && $_GET['action'] === 'detalhes' && isset($_GET['pedido_id'])) {
+        $controller->getDetalhesPedido((int)$_GET['pedido_id']);
+        exit;
+    }
+    
     $controller->listarMeusPedidos();
 }
