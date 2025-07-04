@@ -22,7 +22,21 @@ class CarrinhoService {
         $this->produtoDao = new ProdutoDao($dbConnection);
     }
 
-
+    private function atualizarTotalPedido(int $pedidoId): void {
+        $itens = $this->itemPedidoDao->getItensByPedidoId($pedidoId);
+        $total = 0.0;
+        
+        foreach ($itens as $item) {
+            $total += $item->getSubtotal();
+        }
+        
+        // Buscar o pedido e atualizar o total
+        $pedido = $this->pedidoDao->getPedidoById($pedidoId);
+        if ($pedido) {
+            $pedido->setValorTotal($total);
+            $this->pedidoDao->update($pedido);
+        }
+    }
     
     public function adicionarProduto(int $clienteId, int $produtoId): void {
         // Verificar existência do produto e estoque
@@ -61,6 +75,9 @@ class CarrinhoService {
             $itemPedido = new ItemPedido($pedido->getId(), $produtoId, 1, $produto->getEstoque()->getPreco());
             $itemPedidoId = $this->itemPedidoDao->create($itemPedido);
         }
+
+        // Atualizar o total do pedido após adicionar item
+        $this->atualizarTotalPedido($pedido->getId());
     }
     
     public function listarItensDoCarrinho(int $clienteId): array {
@@ -112,7 +129,14 @@ class CarrinhoService {
         }
         
         // Remover o item
-        return $this->itemPedidoDao->delete($itemId);
+        $resultado = $this->itemPedidoDao->delete($itemId);
+
+        if ($resultado) {
+            // Atualizar o total do pedido após remover item
+            $this->atualizarTotalPedido($pedido->getId());
+        }
+
+        return $resultado;
     }
 
     public function alterarQuantidade(int $clienteId, int $itemId, int $novaQuantidade): bool {
@@ -145,6 +169,13 @@ class CarrinhoService {
         // Atualizar quantidade
         $itemEncontrado->setQuantidade($novaQuantidade);
         
-        return $this->itemPedidoDao->update($itemEncontrado);
+        $resultado = $this->itemPedidoDao->update($itemEncontrado);
+
+        if ($resultado) {
+            // Atualizar o total do pedido após alterar quantidade
+            $this->atualizarTotalPedido($pedido->getId());
+        }
+
+        return $resultado;
     }
 }

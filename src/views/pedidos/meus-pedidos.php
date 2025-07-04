@@ -35,28 +35,45 @@
                                     <div class="row align-items-center">
                                         <div class="col-md-2">
                                             <h6 class="card-title mb-1">Pedido</h6>
-                                            <p class="mb-0 fw-bold"><?= htmlspecialchars($pedido['numero']) ?></p>
+                                            <p class="mb-0 fw-bold"><?= htmlspecialchars($pedido->getNumero()) ?></p>
                                         </div>
                                         <div class="col-md-2">
                                             <h6 class="mb-1 text-muted">Data do Pedido</h6>
-                                            <p class="mb-0"><?= $pedido['data_pedido'] ?></p>
+                                            <p class="mb-0"><?= date('d/m/Y H:i', strtotime($pedido->getDataPedido())) ?></p>
                                         </div>
                                         <div class="col-md-2">
                                             <h6 class="mb-1 text-muted">Status</h6>
-                                            <span class="badge bg-<?= $pedido['status_cor'] ?> fs-6">
-                                                <?= $pedido['status_texto'] ?>
+                                            <?php 
+                                                $situacao = $pedido->getSituacao();
+                                                $statusClass = match($situacao) {
+                                                    'NOVO' => 'primary',
+                                                    'ENVIADO' => 'warning',
+                                                    'ENTREGUE' => 'success',
+                                                    'CANCELADO' => 'danger',
+                                                    default => 'secondary'
+                                                };
+                                                $statusTexto = match($situacao) {
+                                                    'NOVO' => 'Novo',
+                                                    'ENVIADO' => 'Enviado',
+                                                    'ENTREGUE' => 'Entregue',
+                                                    'CANCELADO' => 'Cancelado',
+                                                    default => $situacao
+                                                };
+                                            ?>
+                                            <span class="badge bg-<?= $statusClass ?> fs-6">
+                                                <?= $statusTexto ?>
                                             </span>
                                         </div>
                                         <div class="col-md-2">
                                             <h6 class="mb-1 text-muted">Valor Total</h6>
-                                            <p class="mb-0 fw-bold text-success">R$ <?= $pedido['valor_total'] ?></p>
+                                            <p class="mb-0 fw-bold text-success">R$ <?= number_format($pedido->getValorTotal(), 2, ',', '.') ?></p>
                                         </div>
                                         <div class="col-md-2">
                                             <h6 class="mb-1 text-muted">Data Entrega</h6>
-                                            <p class="mb-0"><?= $pedido['data_entrega'] ?></p>
+                                            <p class="mb-0"><?= $pedido->getDataEntrega() ? date('d/m/Y', strtotime($pedido->getDataEntrega())) : '-' ?></p>
                                         </div>
                                         <div class="col-md-2 text-end">
-                                            <a href="/pedido-detalhes.php?id=<?= $pedido['id'] ?>" 
+                                            <a href="/pedido-detalhes.php?id=<?= $pedido->getId() ?>" 
                                                class="btn btn-primary">Ver Detalhes</a>
                                         </div>
                                     </div>
