@@ -24,4 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     
     $controller->listarMeusPedidos();
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Confirmar pedido
+    if (isset($_POST['action']) && $_POST['action'] === 'confirmar_pedido') {
+        $controller->confirmarPedido();
+        exit;
+    }
+    
+    // Redirecionamento padrão para POSTs não reconhecidos
+    header("Location: /meus-pedidos.php");
+    exit;
 }

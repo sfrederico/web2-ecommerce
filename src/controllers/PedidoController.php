@@ -36,4 +36,27 @@ class PedidoController {
             echo "Erro ao carregar detalhes: " . $e->getMessage();
         }
     }
+
+    public function confirmarPedido() {
+        $clienteId = $_SESSION['user']['id'];
+        
+        try {
+            $resultado = $this->pedidoService->confirmarPedido($clienteId);
+            
+            if ($resultado) {
+                $_SESSION['sucesso'] = 'Pedido confirmado com sucesso!';
+                header('Location: /meus-pedidos.php');
+                exit;
+            } else {
+                $_SESSION['erro'] = 'Erro ao confirmar pedido: carrinho vazio';
+                header('Location: /carrinho.php');
+                exit;
+            }
+
+        } catch (Exception $e) {
+            $_SESSION['erro'] = 'Erro ao confirmar pedido: ' . $e->getMessage();
+            header('Location: /carrinho.php');
+            exit;
+        }
+    }
 }

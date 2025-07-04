@@ -95,7 +95,10 @@
             
             <div class="d-flex justify-content-between mt-3">
                 <a href="/" class="btn btn-secondary">Continuar comprando</a>
-                <button class="btn btn-success">Finalizar pedido</button>
+                <form method="POST" action="/meus-pedidos.php" style="display: inline;">
+                    <input type="hidden" name="action" value="confirmar_pedido">
+                    <button type="submit" class="btn btn-success">Finalizar pedido</button>
+                </form>
             </div>
         <?php endif; ?>
         

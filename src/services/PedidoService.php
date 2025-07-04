@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../dao/PedidoDao.php';
 require_once __DIR__ . '/../dao/ItemPedidoDao.php';
+require_once __DIR__ . '/../model/Pedido.php';
+require_once __DIR__ . '/../model/ItemPedido.php';
 
 class PedidoService {
     private PedidoDao $pedidoDao;
@@ -42,6 +44,25 @@ class PedidoService {
         $pedido->setItens($itens);
 
         return $this->renderDetalhesModal($pedido);
+    }
+
+    public function confirmarPedido($clienteId): bool
+    {   
+        $pedido = $this->pedidoDao->getPedidoNaoConfirmado($clienteId);
+
+        $itens = $this->itemPedidoDao->getItensByPedidoId($pedido->getId());
+
+        if (empty($itens)) {
+            throw new Exception("Carrinho vazio, não é possível confirmar o pedido.");
+        }
+
+        // TODO : Implementar lógica de validação de quantidade em estoque
+
+        
+
+
+        echo "Confirmar pedido para o cliente: " . $clienteId;
+
     }
 
 }
