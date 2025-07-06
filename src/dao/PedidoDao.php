@@ -171,7 +171,33 @@ class PedidoDao {
         return $pedidos;
     }
 
+    public function verificarPedidoPertenceAoFornecedor(int $pedidoId, int $fornecedorId): bool {
+        $query = "SELECT COUNT(*) FROM pedido p 
+                  INNER JOIN item_pedido ip ON p.id = ip.pedido_id
+                  INNER JOIN produto prod ON ip.produto_id = prod.id
+                  WHERE p.id = :pedidoId AND prod.fornecedor_id = :fornecedorId";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([
+            ':pedidoId' => $pedidoId,
+            ':fornecedorId' => $fornecedorId
+        ]);
+        
+        return $stmt->fetchColumn() > 0;
+    }
     
-
-
+    public function atualizarStatusEDataEntrega(int $pedidoId, string $novoStatus, ?string $novaDataEntrega): bool {
+        $query = "UPDATE pedido SET 
+                    situacao = :situacao,
+                    data_entrega = :data_entrega
+                  WHERE id = :id";
+        
+        $stmt = $this->connection->prepare($query);
+        
+        return $stmt->execute([
+            ':situacao' => $novoStatus,
+            ':data_entrega' => $novaDataEntrega ?: null,
+            ':id' => $pedidoId
+        ]);
+    }
 }

@@ -10,7 +10,7 @@
 <div class="row mb-3">
     <div class="col-md-6">
         <h6><strong>Status:</strong> 
-            <span class="badge bg-primary"><?= htmlspecialchars($pedido->getSituacao()) ?></span>
+            <span class="badge bg-primary status-badge"><?= htmlspecialchars($pedido->getSituacao()) ?></span>
         </h6>
     </div>
     <div class="col-md-6">
@@ -27,6 +27,51 @@
         </h6>
     </div>
     <div class="col-md-6">
+        <!-- Espaço reservado -->
+    </div>
+</div>
+
+<!-- Seção de Atualização do Pedido -->
+<div class="card mb-3">
+    <div class="card-header bg-light">
+        <h6 class="mb-0"><strong>Atualizar Pedido</strong></h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="status-pedido" class="form-label"><strong>Alterar Status:</strong></label>
+                    <select class="form-select status-pedido" 
+                            id="status-pedido"
+                            data-pedido-id="<?= $pedido->getId() ?>">
+                        <option value="PENDENTE" <?= $pedido->getSituacao() === 'PENDENTE' ? 'selected' : '' ?>>Pendente</option>
+                        <option value="PROCESSANDO" <?= $pedido->getSituacao() === 'PROCESSANDO' ? 'selected' : '' ?>>Processando</option>
+                        <option value="ENVIADO" <?= $pedido->getSituacao() === 'ENVIADO' ? 'selected' : '' ?>>Enviado</option>
+                        <option value="ENTREGUE" <?= $pedido->getSituacao() === 'ENTREGUE' ? 'selected' : '' ?>>Entregue</option>
+                        <option value="CANCELADO" <?= $pedido->getSituacao() === 'CANCELADO' ? 'selected' : '' ?>>Cancelado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="data-entrega" class="form-label"><strong>Data de Entrega:</strong></label>
+                    <input type="date" 
+                           class="form-control data-entrega" 
+                           id="data-entrega"
+                           data-pedido-id="<?= $pedido->getId() ?>"
+                           value="<?= $pedido->getDataEntrega() ? date('Y-m-d', strtotime($pedido->getDataEntrega())) : '' ?>"
+                           min="<?= date('Y-m-d') ?>">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success btn-sm atualizar-pedido" data-pedido-id="<?= $pedido->getId() ?>">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+                <small class="text-muted ms-2">As alterações serão aplicadas imediatamente.</small>
+            </div>
+        </div>
     </div>
 </div>
 

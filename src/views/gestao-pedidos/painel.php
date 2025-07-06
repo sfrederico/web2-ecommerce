@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Pedidos - Fornecedor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
@@ -20,7 +21,7 @@
         <?php else: ?>
             <div class="mt-4">
                 <?php foreach ($pedidos as $pedido): ?>
-                    <div class="card mb-3">
+                    <div class="card mb-3 pedido-row" data-pedido-id="<?= $pedido->getId() ?>">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-md-2">
@@ -69,7 +70,7 @@
                                         <button class="btn btn-outline-primary btn-sm btn-detalhes" type="button" 
                                                 data-bs-toggle="modal" data-bs-target="#detalhesModal" 
                                                 data-pedido-id="<?= $pedido->getId() ?>">
-                                            <i class="fas fa-eye"></i> Ver Detalhes
+                                            Ver Detalhes
                                         </button>
                                     </div>
                                 </div>
@@ -105,6 +106,7 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Adicionar event listener para os botões de detalhes
@@ -125,7 +127,7 @@
             modalContent.innerHTML = '';
             
             // Fazer requisição AJAX
-            fetch(`/gestao-pedidos.php?action=detalhes&pedido_id=${pedidoId}`)
+            fetch(`gestao-pedidos.php?action=detalhes&pedido_id=${pedidoId}`)
                 .then(response => response.text())
                 .then(data => {
                     // Esconder loading e mostrar conteúdo
@@ -138,6 +140,131 @@
                     modalContent.innerHTML = '<div class="alert alert-danger">Erro ao carregar detalhes do pedido.</div>';
                     console.error('Erro:', error);
                 });
+        }
+        
+        // Delegação de eventos para botões carregados dinamicamente
+        $(document).on('click', '.atualizar-pedido', function() {
+            const pedidoId = $(this).data('pedido-id');
+            const novoStatus = $('#status-pedido').val();
+            const novaDataEntrega = $('#data-entrega').val();
+            
+            console.log('Dados:', { pedidoId, novoStatus, novaDataEntrega }); // Debug
+            
+            // Validação básica
+            if (!pedidoId) {
+                alert('Erro: ID do pedido não encontrado.');
+                return;
+            }
+            
+            // Confirmação antes de atualizar
+            if (!confirm('Deseja realmente atualizar este pedido?')) {
+                return;
+            }
+            
+            // Desabilita o botão durante a requisição
+            const $botao = $(this);
+            const textoOriginal = $botao.html();
+            $botao.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Salvando...');
+            
+            // Requisição AJAX
+            $.ajax({
+                url: 'gestao-pedidos.php',
+                type: 'POST',
+                data: {
+                    action: 'atualizar',
+                    pedido_id: pedidoId,
+                    status: novoStatus,
+                    data_entrega: novaDataEntrega
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Atualizar o badge de status na listagem principal
+                        updateStatusBadge(pedidoId, novoStatus);
+                        
+                        // Feedback de sucesso
+                        showAlert('success', 'Pedido atualizado com sucesso!');
+                        
+                        // Fechar o modal após 1 segundo
+                        setTimeout(function() {
+                            $('#detalhesModal').modal('hide');
+                            // Recarregar a página para atualizar a lista
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showAlert('danger', response.message || 'Erro ao atualizar o pedido.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro na requisição:', error);
+                    showAlert('danger', 'Erro na comunicação com o servidor.');
+                },
+                complete: function() {
+                    // Reabilita o botão
+                    $botao.prop('disabled', false).html(textoOriginal);
+                }
+            });
+        });
+        
+        // Função para atualizar o badge de status na listagem
+        function updateStatusBadge(pedidoId, novoStatus) {
+            const $badge = $(`.pedido-row[data-pedido-id="${pedidoId}"] .badge`);
+            if ($badge.length) {
+                // Remove classes de badge existentes
+                $badge.removeClass('bg-secondary bg-primary bg-warning bg-success bg-danger');
+                
+                // Adiciona nova classe e texto baseado no status
+                let badgeClass = 'bg-secondary';
+                let badgeText = novoStatus;
+                
+                switch(novoStatus) {
+                    case 'PENDENTE':
+                        badgeClass = 'bg-secondary';
+                        badgeText = 'Pendente';
+                        break;
+                    case 'PROCESSANDO':
+                        badgeClass = 'bg-primary';
+                        badgeText = 'Processando';
+                        break;
+                    case 'ENVIADO':
+                        badgeClass = 'bg-warning';
+                        badgeText = 'Enviado';
+                        break;
+                    case 'ENTREGUE':
+                        badgeClass = 'bg-success';
+                        badgeText = 'Entregue';
+                        break;
+                    case 'CANCELADO':
+                        badgeClass = 'bg-danger';
+                        badgeText = 'Cancelado';
+                        break;
+                }
+                
+                $badge.addClass(badgeClass).text(badgeText);
+            }
+        }
+        
+        // Função para exibir alertas
+        function showAlert(type, message) {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // Remove alertas anteriores
+            $('.modal-body .alert').remove();
+            
+            // Adiciona o novo alerta no topo do modal
+            $('.modal-body').prepend(alertHtml);
+            
+            // Remove o alerta após 5 segundos
+            setTimeout(function() {
+                $('.alert').fadeOut(function() {
+                    $(this).remove();
+                });
+            }, 5000);
         }
     </script>
 </body>

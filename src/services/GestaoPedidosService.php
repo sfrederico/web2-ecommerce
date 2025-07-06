@@ -62,4 +62,28 @@ class GestaoPedidosService {
         include __DIR__ . '/../views/gestao-pedidos/detalhes-modal.php';
         return ob_get_clean();
     }
+    
+    public function pedidoPertenceAoFornecedor(int $pedidoId, int $fornecedorId): bool {
+        return $this->pedidoDao->verificarPedidoPertenceAoFornecedor($pedidoId, $fornecedorId);
+    }
+    
+    public function atualizarPedido(int $pedidoId, string $novoStatus, ?string $novaDataEntrega): bool {
+        // Validar status
+        $statusPermitidos = ['PENDENTE', 'PROCESSANDO', 'ENVIADO', 'ENTREGUE', 'CANCELADO'];
+        if (!in_array($novoStatus, $statusPermitidos)) {
+            throw new Exception('Status inválido.');
+        }
+        
+        // Validar data de entrega (se fornecida)
+        if ($novaDataEntrega && !empty($novaDataEntrega)) {
+            $dataEntrega = date_create_from_format('Y-m-d', $novaDataEntrega);
+            $hoje = date_create('today');
+            if (!$dataEntrega || $dataEntrega < $hoje) {
+                throw new Exception('Data de entrega inválida ou no passado.');
+            }
+        }
+        
+        // Atualizar o pedido
+        return $this->pedidoDao->atualizarStatusEDataEntrega($pedidoId, $novoStatus, $novaDataEntrega);
+    }
 }

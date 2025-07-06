@@ -24,5 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     
     $controller->mostrarPainelGestao();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Ações POST futuras para processar pedidos
+    // Atualizar pedido
+    if (isset($_POST['action']) && $_POST['action'] === 'atualizar') {
+        header('Content-Type: application/json');
+        $controller->atualizarPedido();
+        exit;
+    }
 }
