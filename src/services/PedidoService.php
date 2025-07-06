@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../dao/EstoqueDao.php';
 require_once __DIR__ . '/../dao/PedidoDao.php';
 require_once __DIR__ . '/../dao/ItemPedidoDao.php';
 require_once __DIR__ . '/../model/Pedido.php';
@@ -8,10 +9,12 @@ require_once __DIR__ . '/../model/ItemPedido.php';
 class PedidoService {
     private PedidoDao $pedidoDao;
     private ItemPedidoDao $itemPedidoDao;
+    private EstoqueDao $estoqueDao;
 
     public function __construct(private $dbConnection) {
         $this->pedidoDao = new PedidoDao($dbConnection);
         $this->itemPedidoDao = new ItemPedidoDao($dbConnection);
+        $this->estoqueDao = new EstoqueDao($dbConnection);
     }
 
     public function getPedidosConfirmadosDoCliente(int $clienteId): array {
@@ -46,7 +49,7 @@ class PedidoService {
         return $this->renderDetalhesModal($pedido);
     }
 
-    public function confirmarPedido($clienteId): bool
+    public function confirmarPedido($clienteId): array
     {   
         $pedido = $this->pedidoDao->getPedidoNaoConfirmado($clienteId);
 
@@ -56,12 +59,31 @@ class PedidoService {
             throw new Exception("Carrinho vazio, não é possível confirmar o pedido.");
         }
 
-        // TODO : Implementar lógica de validação de quantidade em estoque
+        $itensSemEstoque = [];
 
-        
+        foreach ($itens as $item) {
+            $estoque = $this->estoqueDao->getEstoqueByProdutoId($item->getProdutoId());
+            $qtde_em_estoque = $estoque->getQuantidade();
+            if ($item->getQuantidade() > $qtde_em_estoque) {
+                $item->getProduto()->setEstoque($estoque);
+                $itensSemEstoque[] = $item;
+            }
+        }
 
+        if (!empty($itensSemEstoque)) {
+            return [
+                'sucesso' => false,
+                'mensagem' => 'Não foi possível confirmar o pedido. Itens a seguir estão sem estoque suficiente: ',
+                'itens_sem_estoque' => $itensSemEstoque
+            ];
+        };
 
-        echo "Confirmar pedido para o cliente: " . $clienteId;
+        $this->pedidoDao->confirmarPedido($pedido->getId());
+
+        return [
+            'sucesso' => true,
+            'mensagem' => 'Pedido confirmado com sucesso!'
+        ];
 
     }
 

@@ -135,5 +135,16 @@ class PedidoDao {
         return null;
     }
 
+    public function confirmarPedido(int $pedidoId): bool {
+        $query = "UPDATE PEDIDO SET confirmado = TRUE WHERE id = :pedidoId";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':pedidoId', $pedidoId, PDO::PARAM_INT);
+        
+        return $stmt->execute();
+    }
+
+    
+
 
 }

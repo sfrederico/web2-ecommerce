@@ -21,7 +21,16 @@
         <?php endif; ?>
         
         <?php if (isset($_SESSION['erro'])): ?>
-            <div class="alert alert-danger"><?= $_SESSION['erro'] ?></div>
+            <div class="alert alert-danger"><?= $_SESSION['erro'] ?>
+                <?php if (isset($_SESSION['itens_sem_estoque'])): ?>
+                    <?php foreach ($_SESSION['itens_sem_estoque'] as $item): ?>
+                        <div>
+                            Item: <?= htmlspecialchars($item->getProduto()->getNome()) ?> - Quantidade disponível: <?= htmlspecialchars($item->getProduto()->getEstoque()->getQuantidade()) ?>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php unset($_SESSION['itens_sem_estoque']); ?>
+                <?php endif; ?>
+            </div>
             <?php unset($_SESSION['erro']); ?>
         <?php endif; ?>
         
