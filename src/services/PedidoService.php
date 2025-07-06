@@ -68,6 +68,11 @@ class PedidoService {
                 $item->getProduto()->setEstoque($estoque);
                 $itensSemEstoque[] = $item;
             }
+            else {
+                // Atualiza o estoque do produto
+                $estoque->setQuantidade($qtde_em_estoque - $item->getQuantidade());
+                $this->estoqueDao->update($estoque);
+            }
         }
 
         if (!empty($itensSemEstoque)) {
