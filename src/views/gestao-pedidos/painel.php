@@ -66,7 +66,9 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="d-grid">
-                                        <button class="btn btn-outline-primary btn-sm" type="button">
+                                        <button class="btn btn-outline-primary btn-sm btn-detalhes" type="button" 
+                                                data-bs-toggle="modal" data-bs-target="#detalhesModal" 
+                                                data-pedido-id="<?= $pedido->getId() ?>">
                                             <i class="fas fa-eye"></i> Ver Detalhes
                                         </button>
                                     </div>
@@ -79,6 +81,64 @@
         <?php endif; ?>
     </div>
     
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhesModalLabel">Detalhes do Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="loading" class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                    <div id="modal-content"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Adicionar event listener para os botões de detalhes
+            document.querySelectorAll('.btn-detalhes').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const pedidoId = this.getAttribute('data-pedido-id');
+                    carregarDetalhes(pedidoId);
+                });
+            });
+        });
+
+        function carregarDetalhes(pedidoId) {
+            const loading = document.getElementById('loading');
+            const modalContent = document.getElementById('modal-content');
+            
+            // Mostrar loading e limpar conteúdo
+            loading.style.display = 'block';
+            modalContent.innerHTML = '';
+            
+            // Fazer requisição AJAX
+            fetch(`/gestao-pedidos.php?action=detalhes&pedido_id=${pedidoId}`)
+                .then(response => response.text())
+                .then(data => {
+                    // Esconder loading e mostrar conteúdo
+                    loading.style.display = 'none';
+                    modalContent.innerHTML = data;
+                })
+                .catch(error => {
+                    // Esconder loading e mostrar erro
+                    loading.style.display = 'none';
+                    modalContent.innerHTML = '<div class="alert alert-danger">Erro ao carregar detalhes do pedido.</div>';
+                    console.error('Erro:', error);
+                });
+        }
+    </script>
 </body>
 </html>

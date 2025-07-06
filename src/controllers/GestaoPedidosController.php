@@ -16,4 +16,9 @@ class GestaoPedidosController {
         
         include_once(__DIR__ . '/../views/gestao-pedidos/painel.php');
     }
+
+    public function getDetalhesPedido(int $pedidoId) {
+        $detalhes = $this->gestaoPedidosService->getDetalhesPedido($pedidoId);
+        echo $detalhes;
+    }
 }

@@ -16,6 +16,12 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['papel'] !== 'fornecedor') {
 $controller = new GestaoPedidosController($dbConnection);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // Rota para detalhes do pedido
+    if (isset($_GET['action']) && $_GET['action'] === 'detalhes' && isset($_GET['pedido_id'])) {
+        $controller->getDetalhesPedido((int)$_GET['pedido_id']);
+        exit;
+    }
+    
     $controller->mostrarPainelGestao();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ações POST futuras para processar pedidos
