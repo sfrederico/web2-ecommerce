@@ -31,31 +31,6 @@ class HomeService {
         return $produtos;
     }
 
-    // public function buscarProdutosPorFiltro(int $fornecedorId, string $search): array {
-    //     $produtos = $this->produtoDao->getProdutosPorFiltro($fornecedorId, $search);
-
-    //     foreach ($produtos as $produto) {
-    //         $estoque = $this->estoqueDao->getEstoqueByProdutoId($produto->getId());
-    //         if ($estoque) {
-    //             $produto->setEstoque($estoque);
-    //         }
-    //     }
-
-    //     return $produtos;
-    // }
-    public function buscarTodosProdutosPorFiltro($search) {
-        $produtos = $this->produtoDao->getTodosProdutosPorFiltro($search);
-
-        foreach ($produtos as $produto) {
-            $estoque = $this->estoqueDao->getEstoqueByProdutoId($produto->getId());
-            if ($estoque) {
-                $produto->setEstoque($estoque);
-            }
-        }
-
-        return $produtos;
-    }
-
     public function buscarTodosProdutos() {
         $produtos = $this->produtoDao->getTodosProdutos();
 
