@@ -21,7 +21,11 @@ if (!isset($_SESSION['user'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/src/views/estoque/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
+        body {
+            background:rgb(255, 255, 255) !important;
+        }
         .titulo-produto {
             display: -webkit-box;
             -webkit-box-orient: vertical;
@@ -41,7 +45,15 @@ if (!isset($_SESSION['user'])) {
 <body>
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     <div class="container my-5">
-        <h1 class="text-center mb-4">Bem-vindo ao SHEEP COMMERCE</h1>
+        <h1 class="text-center mb-4" style="
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            font-size: 5;
+            letter-spacing: 2px;
+            color: #4d41d3;
+            background: linear-gradient(90deg, #4d41d3 0%, #4d41d3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;">Bem-vindo ao SHEEP COMMERCE</h1>
         <form method="GET" action="/home.php" class="mb-4">
             <div class="row g-2">
                 <div class="col-md-10">
@@ -54,7 +66,7 @@ if (!isset($_SESSION['user'])) {
         </form>
         <?php if (empty($produtos)): ?>
             <div class="alert alert-warning text-center" role="alert">
-                Os estoques estão vazios. Nenhum produto encontrado.
+                A lista de produtos está vazia, aguarde novidades!
             </div>
         <?php else: ?>
             <div class="row g-4">

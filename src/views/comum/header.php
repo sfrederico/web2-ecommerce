@@ -1,4 +1,4 @@
-<header class="navbar navbar-expand bg-white shadow-sm sticky-top">
+<header class="navbar navbar-expand shadow-sm sticky-top" style="background:rgb(225, 225, 248);">
     <div class="container-fluid flex-column flex-lg-row align-items-center gap-3 gap-lg-0">
         <a class="navbar-brand ms-lg-4 mb-2 mb-lg-0" href="/">
             <img src="/static/logo-horizontal.png" alt="Logo" style="height:64px;">
