@@ -13,6 +13,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <?php if ($_SESSION['user']['papel'] === 'fornecedor'): ?>
                                 <li><a class="dropdown-item" href="/estoque.php">Estoque</a></li>
+                                <li><a class="dropdown-item" href="/gestao-pedidos.php">Painel Pedidos</a></li>
                             <?php endif; ?>
                             <li><a class="dropdown-item" href="/perfil.php">Perfil</a></li>
                             <li><a class="dropdown-item" href="/logout.php">Sair</a></li>

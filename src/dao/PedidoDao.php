@@ -144,6 +144,33 @@ class PedidoDao {
         return $stmt->execute();
     }
 
+    public function getPedidosPorFornecedor(int $fornecedorId): array {
+        $query = "SELECT DISTINCT p.* FROM pedido p
+                  INNER JOIN item_pedido ip ON p.id = ip.pedido_id
+                  INNER JOIN produto prod ON ip.produto_id = prod.id
+                  WHERE prod.fornecedor_id = :fornecedorId
+                  AND p.confirmado = TRUE
+                  ORDER BY p.data_pedido DESC";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':fornecedorId' => $fornecedorId]);
+        
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedido = new Pedido($row['numero'], $row['cliente_id']);
+            $pedido->setId($row['id']);
+            $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setDataEntrega($row['data_entrega']);
+            $pedido->setSituacao($row['situacao']);
+            $pedido->setConfirmado($row['confirmado']);
+            $pedido->setValorTotal($row['valor_total']);
+            
+            $pedidos[] = $pedido;
+        }
+        
+        return $pedidos;
+    }
+
     
 
 
