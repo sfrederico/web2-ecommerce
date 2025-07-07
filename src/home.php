@@ -8,7 +8,7 @@ if (!SessionHelper::isSessionStarted()) {
     session_start();
 }
 
-if (!isset($_SESSION['user']) || $_SESSION['user']['papel'] !== 'fornecedor') {
+if (!isset($_SESSION['user'])) {
     header("Location: /login.php");
     exit();
 }
