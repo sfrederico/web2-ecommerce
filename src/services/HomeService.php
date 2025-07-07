@@ -48,5 +48,22 @@ class HomeService {
 
         return $produtos;
     }
+
+    public function buscarTodosProdutosPorFiltro($search) {
+        $produtos = $this->produtoDao->getTodosProdutosPorFiltro($search);
+
+        foreach ($produtos as $produto) {
+            $estoque = $this->estoqueDao->getEstoqueByProdutoId($produto->getId());
+            if ($estoque) {
+                $produto->setEstoque($estoque);
+            }
+            $fornecedor = $this->fornecedorDao->getFornecedorById($produto->getFornecedorId());
+            if ($fornecedor) {
+                $produto->setFornecedor($fornecedor);
+            }
+        }
+
+        return $produtos;
+    }
     
 }
