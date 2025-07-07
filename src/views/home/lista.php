@@ -105,11 +105,15 @@ $produtosPagina = array_slice($produtos, $inicio, $produtosPorPagina);
                                 <span class="descricao-produto"><?php echo htmlspecialchars($produto->getFornecedor()->getUsuario()->getNome() ?? 'N/A'); ?></span>
                             </div>
                             <div class="d-flex justify-content-center mt-2">
-                                <form method="POST" action="/carrinho.php" class="d-inline">
-                                    <input type="hidden" name="acao" value="adicionar">
-                                    <input type="hidden" name="produto_id" value="<?php echo $produto->getId(); ?>">
-                                    <button type="submit" class="btn text-white btn-sm" style="background: #4d41d3;">Adicionar ao carrinho</button>
-                                </form>
+                                <?php if (($produto->getEstoque()->getQuantidade() ?? 0) > 0): ?>
+                                    <form method="POST" action="/carrinho.php" class="d-inline">
+                                        <input type="hidden" name="acao" value="adicionar">
+                                        <input type="hidden" name="produto_id" value="<?php echo $produto->getId(); ?>">
+                                        <button type="submit" class="btn text-white btn-sm" style="background: #4d41d3;">Adicionar ao carrinho</button>
+                                    </form>
+                                <?php else: ?>
+                                    <button class="btn btn-secondary btn-sm" disabled>Indisponível</button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
