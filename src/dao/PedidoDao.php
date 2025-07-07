@@ -418,4 +418,60 @@ class PedidoDao {
         
         return (int) $stmt->fetchColumn();
     }
+
+    public function getTodosPedidos(?string $termoBusca = null): array {
+        $baseQuery = "SELECT DISTINCT p.*, 
+                             c.id as cliente_id, c.cartao_credito,
+                             u.id as usuario_id, u.nome as cliente_nome, u.email as cliente_email, 
+                             u.telefone as cliente_telefone, u.nome_usuario as cliente_nome_usuario
+                      FROM pedido p
+                      INNER JOIN cliente c ON p.cliente_id = c.id
+                      INNER JOIN usuario u ON c.id = u.id
+                      WHERE p.confirmado = TRUE";
+        
+        if ($termoBusca) {
+            $baseQuery .= " AND (p.numero ILIKE :termoBusca OR u.nome ILIKE :termoBusca)";
+        }
+        
+        $baseQuery .= " ORDER BY p.data_pedido DESC";
+        
+        $stmt = $this->connection->prepare($baseQuery);
+        
+        if ($termoBusca) {
+            $termoComWildcard = '%' . $termoBusca . '%';
+            $stmt->execute([':termoBusca' => $termoComWildcard]);
+        } else {
+            $stmt->execute();
+        }
+        
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedido = new Pedido($row['numero'], $row['cliente_id']);
+            $pedido->setId($row['id']);
+            $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setDataEntrega($row['data_entrega']);
+            $pedido->setSituacao($row['situacao']);
+            $pedido->setConfirmado($row['confirmado']);
+            $pedido->setValorTotal($row['valor_total']);
+            
+            // Criar e popular o objeto Cliente/Usuario
+            $usuario = new Usuario(
+                $row['usuario_id'],
+                $row['cliente_nome_usuario'],
+                '', // senha não necessária aqui
+                $row['cliente_nome'],
+                'cliente', // papel padrão
+                $row['cliente_telefone'],
+                $row['cliente_email']
+            );
+            
+            $cliente = new Cliente($usuario, $row['cartao_credito'] ?? '');
+            
+            $pedido->setCliente($cliente);
+            
+            $pedidos[] = $pedido;
+        }
+        
+        return $pedidos;
+    }
 }
