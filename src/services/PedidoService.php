@@ -61,6 +61,7 @@ class PedidoService {
 
         $itensSemEstoque = [];
 
+        // Primeira etapa: verificar se todos os itens têm estoque suficiente
         foreach ($itens as $item) {
             $estoque = $this->estoqueDao->getEstoqueByProdutoId($item->getProdutoId());
             $qtde_em_estoque = $estoque->getQuantidade();
@@ -68,20 +69,24 @@ class PedidoService {
                 $item->getProduto()->setEstoque($estoque);
                 $itensSemEstoque[] = $item;
             }
-            else {
-                // Atualiza o estoque do produto
-                $estoque->setQuantidade($qtde_em_estoque - $item->getQuantidade());
-                $this->estoqueDao->update($estoque);
-            }
         }
 
+        // Se algum item não tem estoque suficiente, retorna erro sem alterar nada
         if (!empty($itensSemEstoque)) {
             return [
                 'sucesso' => false,
                 'mensagem' => 'Não foi possível confirmar o pedido. Itens a seguir estão sem estoque suficiente: ',
                 'itens_sem_estoque' => $itensSemEstoque
             ];
-        };
+        }
+
+        // Segunda etapa: todos os itens têm estoque suficiente, então atualiza o estoque
+        foreach ($itens as $item) {
+            $estoque = $this->estoqueDao->getEstoqueByProdutoId($item->getProdutoId());
+            $qtde_em_estoque = $estoque->getQuantidade();
+            $estoque->setQuantidade($qtde_em_estoque - $item->getQuantidade());
+            $this->estoqueDao->update($estoque);
+        }
 
         $this->pedidoDao->confirmarPedido($pedido->getId());
 
