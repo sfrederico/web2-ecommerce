@@ -100,8 +100,8 @@
                                     <p class="mb-0 fw-bold text-success">R$ <?= number_format($pedido->getValorTotal(), 2, ',', '.') ?></p>
                                 </div>
                                 <div class="col-md-2">
-                                    <h6 class="mb-1 text-muted">Data de Entrega</h6>
-                                    <p class="mb-0"><?= $pedido->getDataEntrega() ? date('d/m/Y', strtotime($pedido->getDataEntrega())) : '-' ?></p>
+                                    <h6 class="mb-1 text-muted">Cliente</h6>
+                                    <p class="mb-0"><?= htmlspecialchars($pedido->getCliente()->getUsuario()->getNome()) ?></p>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="d-grid">

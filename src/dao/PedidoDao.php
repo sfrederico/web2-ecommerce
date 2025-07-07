@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../model/Pedido.php';
+require_once __DIR__ . '/../model/Cliente.php';
+require_once __DIR__ . '/../model/Usuario.php';
 
 class PedidoDao {
     private $connection;
@@ -145,9 +147,15 @@ class PedidoDao {
     }
 
     public function getPedidosPorFornecedor(int $fornecedorId): array {
-        $query = "SELECT DISTINCT p.* FROM pedido p
+        $query = "SELECT DISTINCT p.*, 
+                         c.id as cliente_id, c.cartao_credito,
+                         u.id as usuario_id, u.nome as cliente_nome, u.email as cliente_email, 
+                         u.telefone as cliente_telefone, u.nome_usuario as cliente_nome_usuario
+                  FROM pedido p
                   INNER JOIN item_pedido ip ON p.id = ip.pedido_id
                   INNER JOIN produto prod ON ip.produto_id = prod.id
+                  INNER JOIN cliente c ON p.cliente_id = c.id
+                  INNER JOIN usuario u ON c.id = u.id
                   WHERE prod.fornecedor_id = :fornecedorId
                   AND p.confirmado = TRUE
                   ORDER BY p.data_pedido DESC";
@@ -164,6 +172,21 @@ class PedidoDao {
             $pedido->setSituacao($row['situacao']);
             $pedido->setConfirmado($row['confirmado']);
             $pedido->setValorTotal($row['valor_total']);
+            
+            // Criar e popular o objeto Cliente/Usuario
+            $usuario = new Usuario(
+                $row['usuario_id'],
+                $row['cliente_nome_usuario'],
+                '', // senha não necessária aqui
+                $row['cliente_nome'],
+                'cliente', // papel padrão
+                $row['cliente_telefone'],
+                $row['cliente_email']
+            );
+            
+            $cliente = new Cliente($usuario, $row['cartao_credito'] ?? '');
+            
+            $pedido->setCliente($cliente);
             
             $pedidos[] = $pedido;
         }
@@ -202,7 +225,11 @@ class PedidoDao {
     }
 
     public function getPedidosPorFornecedorETermo(int $fornecedorId, string $termoBusca): array {
-        $query = "SELECT DISTINCT p.* FROM pedido p
+        $query = "SELECT DISTINCT p.*, 
+                         c.id as cliente_id, c.cartao_credito,
+                         u.id as usuario_id, u.nome as cliente_nome, u.email as cliente_email, 
+                         u.telefone as cliente_telefone, u.nome_usuario as cliente_nome_usuario
+                  FROM pedido p
                   INNER JOIN item_pedido ip ON p.id = ip.pedido_id
                   INNER JOIN produto prod ON ip.produto_id = prod.id
                   INNER JOIN cliente c ON p.cliente_id = c.id
@@ -228,6 +255,21 @@ class PedidoDao {
             $pedido->setSituacao($row['situacao']);
             $pedido->setConfirmado($row['confirmado']);
             $pedido->setValorTotal($row['valor_total']);
+            
+            // Criar e popular o objeto Cliente/Usuario
+            $usuario = new Usuario(
+                $row['usuario_id'],
+                $row['cliente_nome_usuario'],
+                '', // senha não necessária aqui
+                $row['cliente_nome'],
+                'cliente', // papel padrão
+                $row['cliente_telefone'],
+                $row['cliente_email']
+            );
+            
+            $cliente = new Cliente($usuario, $row['cartao_credito'] ?? '');
+            
+            $pedido->setCliente($cliente);
             
             $pedidos[] = $pedido;
         }
