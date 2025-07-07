@@ -6,6 +6,14 @@
         <nav class="w-100 d-flex justify-content-center justify-content-lg-end">
             <ul class="navbar-nav flex-column flex-lg-row gap-3 gap-lg-3 align-items-center mb-0">
                 <?php if (isset($_SESSION['user'])): ?>
+                    <?php if ($_SESSION['user']['papel'] === 'cliente'): ?>
+                        <li class="nav-item">
+                            <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm me-2" href="/meus-pedidos.php" style="background: white; border: 2px solid #4d41d3; color: #4d41d3;">Meus Pedidos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm" href="/carrinho.php" style="background: white; border: 2px solid #4d41d3; color: #4d41d3;">Carrinho</a>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle btn rounded-pill px-4 fw-semibold shadow-sm text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: #4d41d3; border: none;">
                             Welcome, <?php echo htmlspecialchars($_SESSION['user']['nome']); ?>
@@ -19,14 +27,6 @@
                             <li><a class="dropdown-item" href="/logout.php">Sair</a></li>
                         </ul>
                     </li>
-                    <?php if ($_SESSION['user']['papel'] === 'cliente'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm me-2" href="/meus-pedidos.php" style="background: white; border: 2px solid #4d41d3; color: #4d41d3;">Meus Pedidos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm" href="/carrinho.php" style="background: white; border: 2px solid #4d41d3; color: #4d41d3;">Carrinho</a>
-                        </li>
-                    <?php endif; ?>
                 <?php else: ?>
                     <li class="nav-item">
                         <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm text-white me-4" href="/login.php" style="background: #4d41d3; border: none;">Login</a>
