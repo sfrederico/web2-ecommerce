@@ -200,4 +200,38 @@ class PedidoDao {
             ':id' => $pedidoId
         ]);
     }
+
+    public function getPedidosPorFornecedorETermo(int $fornecedorId, string $termoBusca): array {
+        $query = "SELECT DISTINCT p.* FROM pedido p
+                  INNER JOIN item_pedido ip ON p.id = ip.pedido_id
+                  INNER JOIN produto prod ON ip.produto_id = prod.id
+                  INNER JOIN cliente c ON p.cliente_id = c.id
+                  INNER JOIN usuario u ON c.id = u.id
+                  WHERE prod.fornecedor_id = :fornecedorId
+                  AND p.confirmado = TRUE
+                  AND (p.numero ILIKE :termoBusca OR u.nome ILIKE :termoBusca)
+                  ORDER BY p.data_pedido DESC";
+        
+        $stmt = $this->connection->prepare($query);
+        $termoComWildcard = '%' . $termoBusca . '%';
+        $stmt->execute([
+            ':fornecedorId' => $fornecedorId,
+            ':termoBusca' => $termoComWildcard
+        ]);
+        
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedido = new Pedido($row['numero'], $row['cliente_id']);
+            $pedido->setId($row['id']);
+            $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setDataEntrega($row['data_entrega']);
+            $pedido->setSituacao($row['situacao']);
+            $pedido->setConfirmado($row['confirmado']);
+            $pedido->setValorTotal($row['valor_total']);
+            
+            $pedidos[] = $pedido;
+        }
+        
+        return $pedidos;
+    }
 }

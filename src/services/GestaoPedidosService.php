@@ -26,6 +26,10 @@ class GestaoPedidosService {
         return $this->pedidoDao->getPedidosPorFornecedor($fornecedorId);
     }
 
+    public function buscarPedidosPorFornecedorETermo(int $fornecedorId, string $termoBusca): array {
+        return $this->pedidoDao->getPedidosPorFornecedorETermo($fornecedorId, $termoBusca);
+    }
+
     public function getDetalhesPedido(int $pedidoId): string {
         // Buscar o pedido
         $pedido = $this->pedidoDao->getPedidoById($pedidoId);

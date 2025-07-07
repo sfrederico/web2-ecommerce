@@ -13,12 +13,50 @@
     <div class="container my-5">
         <h1 class="text-center mb-4">Gestão de Pedidos</h1>
         
-        <?php if (empty($pedidos)): ?>
+        <!-- Formulário de Busca -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" action="gestao-pedidos.php" class="row g-3">
+                    <div class="col-md-9">
+                        <label for="busca_numero" class="form-label">Buscar por Número do Pedido ou Nome do Cliente:</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="busca_numero" 
+                               name="busca_numero" 
+                               placeholder="Digite o número do pedido ou nome do cliente..."
+                               value="<?= htmlspecialchars($_GET['busca_numero'] ?? '') ?>">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Pesquisar
+                        </button>
+                        <a href="gestao-pedidos.php" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <?php if (isset($_GET['busca_numero']) && !empty($_GET['busca_numero']) && empty($pedidos)): ?>
+            <div class="alert alert-info">
+                <h5><i class="fas fa-info-circle"></i> Nenhum resultado encontrado</h5>
+                <p>Não foram encontrados pedidos com o termo "<strong><?= htmlspecialchars($_GET['busca_numero']) ?></strong>" no número do pedido ou nome do cliente.</p>
+                <a href="gestao-pedidos.php" class="btn btn-sm btn-outline-primary">Ver todos os pedidos</a>
+            </div>
+        <?php elseif (empty($pedidos)): ?>
             <div class="alert alert-warning mt-4">
                 <h4>Nenhum pedido encontrado</h4>
                 <p>Não há pedidos confirmados com seus produtos.</p>
             </div>
         <?php else: ?>
+            <?php if (isset($_GET['busca_numero']) && !empty($_GET['busca_numero'])): ?>
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-check-circle"></i> Resultados da busca</h6>
+                    <p class="mb-0">Encontrados <strong><?= count($pedidos) ?></strong> pedido(s) com o termo "<strong><?= htmlspecialchars($_GET['busca_numero']) ?></strong>".</p>
+                </div>
+            <?php endif; ?>
+            
             <div class="mt-4">
                 <?php foreach ($pedidos as $pedido): ?>
                     <div class="card mb-3 pedido-row" data-pedido-id="<?= $pedido->getId() ?>">
