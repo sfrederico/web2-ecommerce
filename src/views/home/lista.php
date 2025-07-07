@@ -10,6 +10,13 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+// Recupera o usuário logado e verifica se é fornecedor
+$usuarioLogado = $_SESSION['user'] ?? null;
+$isFornecedor = false;
+if ($usuarioLogado && isset($usuarioLogado['papel']) && strtolower($usuarioLogado['papel']) === 'fornecedor') {
+    $isFornecedor = true;
+}
+
 // Paginação
 $produtosPorPagina = 9;
 $totalProdutos = count($produtos);
@@ -73,6 +80,11 @@ $produtosPagina = array_slice($produtos, $inicio, $produtosPorPagina);
                 </div>
             </div>
         </form>
+        <?php if ($isFornecedor): ?>
+                    <div class="fw-medium alert text-center my-5" style="background:rgb(225, 225, 248);" role="alert">
+                        Como fornecedor, os produtos não podem ser adicionados ao carrinho.
+                    </div>
+                <?php endif; ?>
         <?php if (empty($produtos)): ?>
             <div class="alert alert-warning text-center" role="alert">
                 A lista de produtos está vazia, aguarde novidades!
@@ -105,14 +117,16 @@ $produtosPagina = array_slice($produtos, $inicio, $produtosPorPagina);
                                 <span class="descricao-produto"><?php echo htmlspecialchars($produto->getFornecedor()->getUsuario()->getNome() ?? 'N/A'); ?></span>
                             </div>
                             <div class="d-flex justify-content-center mt-2">
-                                <?php if (($produto->getEstoque()->getQuantidade() ?? 0) > 0): ?>
+                                <?php if ($isFornecedor): ?>
+                                    <button class="btn btn-secondary btn-sm rounded-pill" disabled>Adicionar ao carrinho</button>
+                                <?php elseif (($produto->getEstoque()->getQuantidade() ?? 0) > 0): ?>
                                     <form method="POST" action="/carrinho.php" class="d-inline">
                                         <input type="hidden" name="acao" value="adicionar">
                                         <input type="hidden" name="produto_id" value="<?php echo $produto->getId(); ?>">
                                         <button type="submit" class="btn text-white btn-sm rounded-pill" style="background: #4d41d3;">Adicionar ao carrinho</button>
                                     </form>
                                 <?php else: ?>
-                                    <button class="btn btn-secondary btn-sm" disabled>Indisponível</button>
+                                    <button class="btn btn-secondary btn-sm rounded-pill" disabled>Indisponível</button>
                                 <?php endif; ?>
                             </div>
                         </div>
