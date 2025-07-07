@@ -84,7 +84,8 @@
                                             <p class="mb-0"><?= $pedido->getDataEntrega() ? date('d/m/Y', strtotime($pedido->getDataEntrega())) : '-' ?></p>
                                         </div>
                                         <div class="col-md-2 text-end">
-                                            <button type="button" class="btn btn-primary" 
+                                            <button type="button" class="btn rounded-pill" 
+                                                    style="background-color: #4d41d3; color: white; border-color: #4d41d3;"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modalDetalhes"
                                                     data-pedido-id="<?= $pedido->getId() ?>">

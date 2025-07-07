@@ -109,7 +109,7 @@ $produtosPagina = array_slice($produtos, $inicio, $produtosPorPagina);
                                     <form method="POST" action="/carrinho.php" class="d-inline">
                                         <input type="hidden" name="acao" value="adicionar">
                                         <input type="hidden" name="produto_id" value="<?php echo $produto->getId(); ?>">
-                                        <button type="submit" class="btn text-white btn-sm" style="background: #4d41d3;">Adicionar ao carrinho</button>
+                                        <button type="submit" class="btn text-white btn-sm rounded-pill" style="background: #4d41d3;">Adicionar ao carrinho</button>
                                     </form>
                                 <?php else: ?>
                                     <button class="btn btn-secondary btn-sm" disabled>Indisponível</button>

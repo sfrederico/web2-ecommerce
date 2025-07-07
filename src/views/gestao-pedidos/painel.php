@@ -45,10 +45,10 @@
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end gap-2 justify-content-end">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn rounded-pill" style="background-color: #4d41d3; color: white; border-color: #4d41d3;">
                             <i class="fas fa-search"></i> Pesquisar
                         </button>
-                        <a href="gestao-pedidos.php" class="btn btn-outline-secondary">
+                        <a href="gestao-pedidos.php" class="btn btn-outline-secondary rounded-pill">
                             <i class="fas fa-times"></i> Limpar
                         </a>
                     </div>
@@ -130,7 +130,8 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="d-grid">
-                                        <button class="btn btn-outline-primary btn-sm btn-detalhes" type="button" 
+                                        <button class="btn btn-sm rounded-pill btn-detalhes" type="button" 
+                                                style="background-color: #4d41d3; color: white; border-color: #4d41d3;"
                                                 data-bs-toggle="modal" data-bs-target="#detalhesModal" 
                                                 data-pedido-id="<?= $pedido->getId() ?>">
                                             Ver Detalhes
