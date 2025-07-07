@@ -276,4 +276,146 @@ class PedidoDao {
         
         return $pedidos;
     }
+
+    public function getPedidosPorFornecedorPaginado(int $fornecedorId, int $limit, int $offset): array {
+        $query = "SELECT DISTINCT p.*, 
+                         c.id as cliente_id, c.cartao_credito,
+                         u.id as usuario_id, u.nome as cliente_nome, u.email as cliente_email, 
+                         u.telefone as cliente_telefone, u.nome_usuario as cliente_nome_usuario
+                  FROM pedido p
+                  INNER JOIN item_pedido ip ON p.id = ip.pedido_id
+                  INNER JOIN produto prod ON ip.produto_id = prod.id
+                  INNER JOIN cliente c ON p.cliente_id = c.id
+                  INNER JOIN usuario u ON c.id = u.id
+                  WHERE prod.fornecedor_id = :fornecedorId
+                  AND p.confirmado = TRUE
+                  ORDER BY p.data_pedido DESC
+                  LIMIT :limit OFFSET :offset";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':fornecedorId', $fornecedorId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedido = new Pedido($row['numero'], $row['cliente_id']);
+            $pedido->setId($row['id']);
+            $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setDataEntrega($row['data_entrega']);
+            $pedido->setSituacao($row['situacao']);
+            $pedido->setConfirmado($row['confirmado']);
+            $pedido->setValorTotal($row['valor_total']);
+            
+            // Criar e popular o objeto Cliente/Usuario
+            $usuario = new Usuario(
+                $row['usuario_id'],
+                $row['cliente_nome_usuario'],
+                '', // senha não necessária aqui
+                $row['cliente_nome'],
+                'cliente', // papel padrão
+                $row['cliente_telefone'],
+                $row['cliente_email']
+            );
+            
+            $cliente = new Cliente($usuario, $row['cartao_credito'] ?? '');
+            
+            $pedido->setCliente($cliente);
+            
+            $pedidos[] = $pedido;
+        }
+        
+        return $pedidos;
+    }
+
+    public function getPedidosPorFornecedorETermoPaginado(int $fornecedorId, string $termoBusca, int $limit, int $offset): array {
+        $query = "SELECT DISTINCT p.*, 
+                         c.id as cliente_id, c.cartao_credito,
+                         u.id as usuario_id, u.nome as cliente_nome, u.email as cliente_email, 
+                         u.telefone as cliente_telefone, u.nome_usuario as cliente_nome_usuario
+                  FROM pedido p
+                  INNER JOIN item_pedido ip ON p.id = ip.pedido_id
+                  INNER JOIN produto prod ON ip.produto_id = prod.id
+                  INNER JOIN cliente c ON p.cliente_id = c.id
+                  INNER JOIN usuario u ON c.id = u.id
+                  WHERE prod.fornecedor_id = :fornecedorId
+                  AND p.confirmado = TRUE
+                  AND (p.numero ILIKE :termoBusca OR u.nome ILIKE :termoBusca)
+                  ORDER BY p.data_pedido DESC
+                  LIMIT :limit OFFSET :offset";
+        
+        $stmt = $this->connection->prepare($query);
+        $termoComWildcard = '%' . $termoBusca . '%';
+        $stmt->bindParam(':fornecedorId', $fornecedorId, PDO::PARAM_INT);
+        $stmt->bindParam(':termoBusca', $termoComWildcard, PDO::PARAM_STR);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedido = new Pedido($row['numero'], $row['cliente_id']);
+            $pedido->setId($row['id']);
+            $pedido->setDataPedido($row['data_pedido']);
+            $pedido->setDataEntrega($row['data_entrega']);
+            $pedido->setSituacao($row['situacao']);
+            $pedido->setConfirmado($row['confirmado']);
+            $pedido->setValorTotal($row['valor_total']);
+            
+            // Criar e popular o objeto Cliente/Usuario
+            $usuario = new Usuario(
+                $row['usuario_id'],
+                $row['cliente_nome_usuario'],
+                '', // senha não necessária aqui
+                $row['cliente_nome'],
+                'cliente', // papel padrão
+                $row['cliente_telefone'],
+                $row['cliente_email']
+            );
+            
+            $cliente = new Cliente($usuario, $row['cartao_credito'] ?? '');
+            
+            $pedido->setCliente($cliente);
+            
+            $pedidos[] = $pedido;
+        }
+        
+        return $pedidos;
+    }
+
+    public function contarPedidosPorFornecedor(int $fornecedorId): int {
+        $query = "SELECT COUNT(DISTINCT p.id) as total
+                  FROM pedido p
+                  INNER JOIN item_pedido ip ON p.id = ip.pedido_id
+                  INNER JOIN produto prod ON ip.produto_id = prod.id
+                  WHERE prod.fornecedor_id = :fornecedorId
+                  AND p.confirmado = TRUE";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':fornecedorId' => $fornecedorId]);
+        
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function contarPedidosPorFornecedorETermo(int $fornecedorId, string $termoBusca): int {
+        $query = "SELECT COUNT(DISTINCT p.id) as total
+                  FROM pedido p
+                  INNER JOIN item_pedido ip ON p.id = ip.pedido_id
+                  INNER JOIN produto prod ON ip.produto_id = prod.id
+                  INNER JOIN cliente c ON p.cliente_id = c.id
+                  INNER JOIN usuario u ON c.id = u.id
+                  WHERE prod.fornecedor_id = :fornecedorId
+                  AND p.confirmado = TRUE
+                  AND (p.numero ILIKE :termoBusca OR u.nome ILIKE :termoBusca)";
+        
+        $stmt = $this->connection->prepare($query);
+        $termoComWildcard = '%' . $termoBusca . '%';
+        $stmt->execute([
+            ':fornecedorId' => $fornecedorId,
+            ':termoBusca' => $termoComWildcard
+        ]);
+        
+        return (int) $stmt->fetchColumn();
+    }
 }

@@ -90,4 +90,36 @@ class GestaoPedidosService {
         // Atualizar o pedido
         return $this->pedidoDao->atualizarStatusEDataEntrega($pedidoId, $novoStatus, $novaDataEntrega);
     }
+    
+    public function buscarPedidosPorFornecedorPaginado(int $fornecedorId, int $page = 1, int $perPage = 2): array {
+        $offset = ($page - 1) * $perPage;
+        $pedidos = $this->pedidoDao->getPedidosPorFornecedorPaginado($fornecedorId, $perPage, $offset);
+        $totalPedidos = $this->pedidoDao->contarPedidosPorFornecedor($fornecedorId);
+        
+        return [
+            'pedidos' => $pedidos,
+            'total' => $totalPedidos,
+            'pagina_atual' => $page,
+            'por_pagina' => $perPage,
+            'total_paginas' => ceil($totalPedidos / $perPage),
+            'inicio' => $offset + 1,
+            'fim' => min($offset + $perPage, $totalPedidos)
+        ];
+    }
+
+    public function buscarPedidosPorFornecedorETermoPaginado(int $fornecedorId, string $termoBusca, int $page = 1, int $perPage = 2): array {
+        $offset = ($page - 1) * $perPage;
+        $pedidos = $this->pedidoDao->getPedidosPorFornecedorETermoPaginado($fornecedorId, $termoBusca, $perPage, $offset);
+        $totalPedidos = $this->pedidoDao->contarPedidosPorFornecedorETermo($fornecedorId, $termoBusca);
+        
+        return [
+            'pedidos' => $pedidos,
+            'total' => $totalPedidos,
+            'pagina_atual' => $page,
+            'por_pagina' => $perPage,
+            'total_paginas' => ceil($totalPedidos / $perPage),
+            'inicio' => $offset + 1,
+            'fim' => min($offset + $perPage, $totalPedidos)
+        ];
+    }
 }

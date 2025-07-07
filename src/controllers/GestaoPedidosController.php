@@ -12,12 +12,17 @@ class GestaoPedidosController {
     public function mostrarPainelGestao() {
         $fornecedorId = $_SESSION['user']['id'];
         $buscaNumero = $_GET['busca_numero'] ?? null;
+        $page = max(1, intval($_GET['page'] ?? 1));
+        $perPage = max(1, intval($_GET['per_page'] ?? 2));
 
         if ($buscaNumero && !empty(trim($buscaNumero))) {
-            $pedidos = $this->gestaoPedidosService->buscarPedidosPorFornecedorETermo($fornecedorId, trim($buscaNumero));
+            $resultado = $this->gestaoPedidosService->buscarPedidosPorFornecedorETermoPaginado($fornecedorId, trim($buscaNumero), $page, $perPage);
         } else {
-            $pedidos = $this->gestaoPedidosService->buscarPedidosPorFornecedor($fornecedorId);
+            $resultado = $this->gestaoPedidosService->buscarPedidosPorFornecedorPaginado($fornecedorId, $page, $perPage);
         }
+        
+        $pedidos = $resultado['pedidos'];
+        $paginacao = $resultado;
         
         include_once(__DIR__ . '/../views/gestao-pedidos/painel.php');
     }

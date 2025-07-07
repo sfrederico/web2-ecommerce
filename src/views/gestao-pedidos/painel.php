@@ -10,6 +10,15 @@
 <body>
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     
+    <?php
+    // Função para construir URLs de paginação mantendo os parâmetros de busca
+    function construirUrlPaginacao($pagina) {
+        $params = $_GET;
+        $params['page'] = $pagina;
+        return 'gestao-pedidos.php?' . http_build_query($params);
+    }
+    ?>
+    
     <div class="container my-5">
         <h1 class="text-center mb-4">Gestão de Pedidos</h1>
         
@@ -17,7 +26,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form method="GET" action="gestao-pedidos.php" class="row g-3">
-                    <div class="col-md-9">
+                    <div class="col-md-6">
                         <label for="busca_numero" class="form-label">Buscar por Número do Pedido ou Nome do Cliente:</label>
                         <input type="text" 
                                class="form-control" 
@@ -25,6 +34,15 @@
                                name="busca_numero" 
                                placeholder="Digite o número do pedido ou nome do cliente..."
                                value="<?= htmlspecialchars($_GET['busca_numero'] ?? '') ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="per_page" class="form-label">Itens por página:</label>
+                        <select class="form-select" id="per_page" name="per_page">
+                            <option value="2" <?= ($_GET['per_page'] ?? 2) == 2 ? 'selected' : '' ?>>2 por página</option>
+                            <option value="5" <?= ($_GET['per_page'] ?? 2) == 5 ? 'selected' : '' ?>>5 por página</option>
+                            <option value="10" <?= ($_GET['per_page'] ?? 2) == 10 ? 'selected' : '' ?>>10 por página</option>
+                            <option value="20" <?= ($_GET['per_page'] ?? 2) == 20 ? 'selected' : '' ?>>20 por página</option>
+                        </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end gap-2 justify-content-end">
                         <button type="submit" class="btn btn-primary">
@@ -50,12 +68,19 @@
                 <p>Não há pedidos confirmados com seus produtos.</p>
             </div>
         <?php else: ?>
-            <?php if (isset($_GET['busca_numero']) && !empty($_GET['busca_numero'])): ?>
-                <div class="alert alert-success">
-                    <h6><i class="fas fa-check-circle"></i> Resultados da busca</h6>
-                    <p class="mb-0">Encontrados <strong><?= count($pedidos) ?></strong> pedido(s) com o termo "<strong><?= htmlspecialchars($_GET['busca_numero']) ?></strong>".</p>
+            <!-- Informações da Paginação -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <?php if (isset($_GET['busca_numero']) && !empty($_GET['busca_numero'])): ?>
+                        <div class="alert alert-success mb-0 py-2">
+                            <small><i class="fas fa-check-circle"></i> Resultados da busca: <strong><?= $paginacao['total'] ?></strong> pedido(s) encontrado(s) com "<strong><?= htmlspecialchars($_GET['busca_numero']) ?></strong>"</small>
+                        </div>
+                    <?php endif; ?>
                 </div>
-            <?php endif; ?>
+                <div class="text-muted">
+                    <small>Mostrando <strong><?= $paginacao['inicio'] ?></strong> a <strong><?= $paginacao['fim'] ?></strong> de <strong><?= $paginacao['total'] ?></strong> pedido(s)</small>
+                </div>
+            </div>
             
             <div class="mt-4">
                 <?php foreach ($pedidos as $pedido): ?>
@@ -117,6 +142,57 @@
                     </div>
                 <?php endforeach; ?>
             </div>
+            
+            <!-- Paginação -->
+            <?php if ($paginacao['total_paginas'] > 1): ?>
+                <div class="d-flex justify-content-center mt-4">
+                    <nav aria-label="Navegação da paginação">
+                        <ul class="pagination">
+                            <!-- Botão Anterior -->
+                            <?php if ($paginacao['pagina_atual'] > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?= construirUrlPaginacao($paginacao['pagina_atual'] - 1) ?>" aria-label="Anterior">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li class="page-item disabled">
+                                    <span class="page-link" aria-label="Anterior">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </span>
+                                </li>
+                            <?php endif; ?>
+                            
+                            <!-- Números das páginas -->
+                            <?php
+                            $inicio = max(1, $paginacao['pagina_atual'] - 2);
+                            $fim = min($paginacao['total_paginas'], $paginacao['pagina_atual'] + 2);
+                            
+                            for ($i = $inicio; $i <= $fim; $i++):
+                            ?>
+                                <li class="page-item <?= $i == $paginacao['pagina_atual'] ? 'active' : '' ?>">
+                                    <a class="page-link" href="<?= construirUrlPaginacao($i) ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            
+                            <!-- Botão Próximo -->
+                            <?php if ($paginacao['pagina_atual'] < $paginacao['total_paginas']): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="<?= construirUrlPaginacao($paginacao['pagina_atual'] + 1) ?>" aria-label="Próximo">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li class="page-item disabled">
+                                    <span class="page-link" aria-label="Próximo">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </span>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
     
@@ -304,6 +380,11 @@
                 });
             }, 5000);
         }
+        
+        // Auto-envio do formulário quando mudar itens por página
+        $('#per_page').on('change', function() {
+            $(this).closest('form').submit();
+        });
     </script>
 </body>
 </html>
