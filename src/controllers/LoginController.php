@@ -32,7 +32,7 @@ class LoginController {
                 'nome' => $user->getNome(),
                 'papel' => $user->getPapel()
             ];
-            header("Location: /views/login/login_success.php");
+            header("Location: /views/home/lista.php");
             exit();
         } else {
             header("Location: /login.php?error=invalid_credentials");

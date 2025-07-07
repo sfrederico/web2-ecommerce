@@ -13,11 +13,20 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <?php if ($_SESSION['user']['papel'] === 'fornecedor'): ?>
                                 <li><a class="dropdown-item" href="/estoque.php">Estoque</a></li>
+                                <li><a class="dropdown-item" href="/gestao-pedidos.php">Painel Pedidos</a></li>
                             <?php endif; ?>
                             <li><a class="dropdown-item" href="/perfil.php">Perfil</a></li>
                             <li><a class="dropdown-item" href="/logout.php">Sair</a></li>
                         </ul>
                     </li>
+                    <?php if ($_SESSION['user']['papel'] === 'cliente'): ?>
+                        <li class="nav-item">
+                            <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm me-2" href="/meus-pedidos.php" style="background: white; border: 2px solid #4d41d3; color: #4d41d3;">Meus Pedidos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm" href="/carrinho.php" style="background: white; border: 2px solid #4d41d3; color: #4d41d3;">Carrinho</a>
+                        </li>
+                    <?php endif; ?>
                 <?php else: ?>
                     <li class="nav-item">
                         <a class="nav-link btn rounded-pill px-4 fw-semibold shadow-sm text-white me-4" href="/login.php" style="background: #4d41d3; border: none;">Login</a>

@@ -7,6 +7,7 @@ class Produto {
     private string $nome;
     private string $descricao;
     private Fornecedor $fornecedor;
+    private int $fornecedorId;
     private ?Estoque $estoque = null;
     private ?string $foto = null;
 
@@ -29,6 +30,10 @@ class Produto {
 
     public function getFornecedor(): Fornecedor {
         return $this->fornecedor;
+    }
+
+    public function getFornecedorId(): int {
+        return $this->fornecedorId;
     }
 
     public function getEstoque(): ?Estoque {
@@ -55,6 +60,10 @@ class Produto {
         $this->fornecedor = $fornecedor;
     }
 
+    public function setFornecedorId(int $fornecedorId): void {
+        $this->fornecedorId = $fornecedorId;
+    }
+    
     public function setEstoque(Estoque $estoque): void {
         $this->estoque = $estoque;
     }
