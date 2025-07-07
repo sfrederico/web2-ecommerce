@@ -9,6 +9,15 @@ if (!isset($_SESSION['user'])) {
     header("Location: /login.php");
     exit();
 }
+
+// Paginação
+$produtosPorPagina = 9;
+$totalProdutos = count($produtos);
+$totalPaginas = max(1, ceil($totalProdutos / $produtosPorPagina));
+$paginaAtual = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$paginaAtual = max(1, min($paginaAtual, $totalPaginas));
+$inicio = ($paginaAtual - 1) * $produtosPorPagina;
+$produtosPagina = array_slice($produtos, $inicio, $produtosPorPagina);
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +30,11 @@ if (!isset($_SESSION['user'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/src/views/estoque/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
+        body {
+            background:rgb(255, 255, 255) !important;
+        }
         .titulo-produto {
             display: -webkit-box;
             -webkit-box-orient: vertical;
@@ -41,11 +54,16 @@ if (!isset($_SESSION['user'])) {
 <body>
     <?php require_once __DIR__ . '/../comum/header.php'; ?>
     <div class="container my-5">
-        <h1 class="text-center mb-4">Home</h1>
-        <div class="text-center mb-4">
-            <a href="/produto.php" class="btn text-white rounded-pill" style="background: #4d41d3" >Criar Produto</a>
-        </div>
-        <form method="GET" action="/estoque.php" class="mb-4">
+        <h1 class="text-center mb-4" style="
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            font-size: 5;
+            letter-spacing: 2px;
+            color: #4d41d3;
+            background: linear-gradient(90deg, #4d41d3 0%, #4d41d3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;">Bem-vindo ao SHEEP COMMERCE</h1>
+        <form method="GET" action="/home.php" class="mb-4">
             <div class="row g-2">
                 <div class="col-md-10">
                     <input type="text" name="search" class="form-control rounded-pill" placeholder="Buscar por ID ou nome do produto" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
@@ -57,11 +75,11 @@ if (!isset($_SESSION['user'])) {
         </form>
         <?php if (empty($produtos)): ?>
             <div class="alert alert-warning text-center" role="alert">
-                O estoque está vazio. Nenhum produto encontrado.
+                A lista de produtos está vazia, aguarde novidades!
             </div>
         <?php else: ?>
             <div class="row g-4">
-                <?php foreach ($produtos as $produto): ?>
+                <?php foreach ($produtosPagina as $produto): ?>
                     <div class="col-md-4">
                         <div class="card shadow-sm p-4" style="height: 300px;">
                             <div class="row g-0 align-items-center mb-2">
@@ -86,19 +104,38 @@ if (!isset($_SESSION['user'])) {
                                 <span class="text-muted small">Fornecedor:</span><br>
                                 <span class="descricao-produto"><?php echo htmlspecialchars($produto->getFornecedor()->getUsuario()->getNome() ?? 'N/A'); ?></span>
                             </div>
-                            <div class="d-flex justify-content-between mt-2">
-                                <a href="/produto.php?acao=editar&id=<?php echo $produto->getId(); ?>" class="btn btn-sm btn-outline-primary rounded-pill">Editar</a>
-                                <form action="/produto.php" method="POST" style="display: inline;">
-                                    <input type="hidden" name="acao" value="excluir">
-                                    <input type="hidden" name="id" value="<?php echo $produto->getId(); ?>">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">Excluir</button>
-                                </form>
+                            <div class="d-flex justify-content-center mt-2">
+                                <?php if (($produto->getEstoque()->getQuantidade() ?? 0) > 0): ?>
+                                    <form method="POST" action="/carrinho.php" class="d-inline">
+                                        <input type="hidden" name="acao" value="adicionar">
+                                        <input type="hidden" name="produto_id" value="<?php echo $produto->getId(); ?>">
+                                        <button type="submit" class="btn text-white btn-sm" style="background: #4d41d3;">Adicionar ao carrinho</button>
+                                    </form>
+                                <?php else: ?>
+                                    <button class="btn btn-secondary btn-sm" disabled>Indisponível</button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
+            <nav aria-label="Navegação de página" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item<?php if ($paginaAtual <= 1) echo ' disabled'; ?>">
+                        <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $paginaAtual - 1])); ?>" tabindex="-1">Anterior</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                        <li class="page-item<?php if ($i == $paginaAtual) echo ' active'; ?>">
+                            <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $i])); ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li class="page-item<?php if ($paginaAtual >= $totalPaginas) echo ' disabled'; ?>">
+                        <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $paginaAtual + 1])); ?>">Próxima</a>
+                    </li>
+                </ul>
+            </nav>
         <?php endif; ?>
     </div>
 </body>
+
 </html>
