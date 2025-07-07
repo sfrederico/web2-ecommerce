@@ -110,43 +110,5 @@
                 </form>
             </div>
         <?php endif; ?>
-        
-        <!-- Botão de teste para adicionar produto -->
-        <div class="row justify-content-center mb-4 mt-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Teste - Adicionar Produto</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="/carrinho.php">
-                            <input type="hidden" name="produto_id" value="1">
-                            <input type="hidden" name="quantidade" value="2">
-                            <input type="hidden" name="preco_unitario" value="29.99">
-                            <button type="submit" class="btn btn-primary">
-                                Adicionar Produto ID 1 ao Carrinho (Teste)
-                            </button>
-                        </form>
-                        <form method="POST" action="/carrinho.php">
-                            <input type="hidden" name="produto_id" value="2">
-                            <input type="hidden" name="quantidade" value="2">
-                            <input type="hidden" name="preco_unitario" value="29.99">
-                            <button type="submit" class="btn btn-primary mt-2">
-                                Adicionar Produto ID 2 ao Carrinho (Teste)
-                            </button>
-                        </form>
-                        <form method="POST" action="/carrinho.php">
-                            <input type="hidden" name="produto_id" value="3">
-                            <input type="hidden" name="quantidade" value="2">
-                            <input type="hidden" name="preco_unitario" value="29.99">
-                            <button type="submit" class="btn btn-primary mt-2">
-                                Adicionar Produto ID 3 ao Carrinho (Teste)
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>

@@ -21,6 +21,17 @@
                     <?php unset($_SESSION['erro']); ?>
                 <?php endif; ?>
                 
+                <?php
+                // Paginação
+                $pedidosPorPagina = 6;
+                $totalPedidos = count($pedidos);
+                $totalPaginas = max(1, ceil($totalPedidos / $pedidosPorPagina));
+                $paginaAtual = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+                $paginaAtual = max(1, min($paginaAtual, $totalPaginas));
+                $inicio = ($paginaAtual - 1) * $pedidosPorPagina;
+                $pedidosPagina = array_slice($pedidos, $inicio, $pedidosPorPagina);
+                ?>
+                
                 <?php if (empty($pedidos)): ?>
                     <div class="alert alert-warning mt-4">
                         <h4>Nenhum pedido encontrado</h4>
@@ -29,7 +40,7 @@
                     </div>
                 <?php else: ?>
                     <div class="mt-4">
-                        <?php foreach ($pedidos as $pedido): ?>
+                        <?php foreach ($pedidosPagina as $pedido): ?>
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="row align-items-center">
@@ -85,6 +96,22 @@
                             </div>
                         <?php endforeach; ?>
                     </div>
+                    <!-- Paginação -->
+                    <nav aria-label="Navegação de página" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item<?php if ($paginaAtual <= 1) echo ' disabled'; ?>">
+                                <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $paginaAtual - 1])); ?>" tabindex="-1">Anterior</a>
+                            </li>
+                            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                                <li class="page-item<?php if ($i == $paginaAtual) echo ' active'; ?>">
+                                    <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $i])); ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item<?php if ($paginaAtual >= $totalPaginas) echo ' disabled'; ?>">
+                                <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $paginaAtual + 1])); ?>">Próxima</a>
+                            </li>
+                        </ul>
+                    </nav>
                 <?php endif; ?>
             </div>
         </div>

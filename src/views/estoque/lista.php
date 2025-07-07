@@ -9,6 +9,15 @@ if (!isset($_SESSION['user'])) {
     header("Location: /login.php");
     exit();
 }
+
+// Paginação
+$produtosPorPagina = 9;
+$totalProdutos = count($produtos);
+$totalPaginas = max(1, ceil($totalProdutos / $produtosPorPagina));
+$paginaAtual = isset($_GET['pagina']) && is_numeric($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$paginaAtual = max(1, min($paginaAtual, $totalPaginas));
+$inicio = ($paginaAtual - 1) * $produtosPorPagina;
+$produtosPagina = array_slice($produtos, $inicio, $produtosPorPagina);
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +70,7 @@ if (!isset($_SESSION['user'])) {
             </div>
         <?php else: ?>
             <div class="row g-4">
-                <?php foreach ($produtos as $produto): ?>
+                <?php foreach ($produtosPagina as $produto): ?>
                     <div class="col-md-4">
                         <div class="card shadow-sm p-4" style="height: 300px;">
                             <div class="row g-0 align-items-center mb-2">
@@ -94,6 +103,21 @@ if (!isset($_SESSION['user'])) {
                     </div>
                 <?php endforeach; ?>
             </div>
+            <nav aria-label="Navegação de página" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item<?php if ($paginaAtual <= 1) echo ' disabled'; ?>">
+                        <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $paginaAtual - 1])); ?>" tabindex="-1">Anterior</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                        <li class="page-item<?php if ($i == $paginaAtual) echo ' active'; ?>">
+                            <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $i])); ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li class="page-item<?php if ($paginaAtual >= $totalPaginas) echo ' disabled'; ?>">
+                        <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['pagina' => $paginaAtual + 1])); ?>">Próxima</a>
+                    </li>
+                </ul>
+            </nav>
         <?php endif; ?>
     </div>
 </body>
