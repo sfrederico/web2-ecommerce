@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y libpq-dev \
 # Install PostgreSQL client tools
 RUN apt-get update && apt-get install -y postgresql-client
 
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+
 # Copy the application source code to the container
 COPY src/ /var/www/html/
 
